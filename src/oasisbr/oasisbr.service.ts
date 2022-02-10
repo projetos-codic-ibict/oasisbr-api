@@ -21,21 +21,30 @@ export class OasisbrService {
   ) { }
 
   // @Cron(CronExpression.EVERY_MINUTE)
-  @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_NOON)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   loadOasisbrNetworks() {
     this.logger.debug('Get all OasisBr networks')
     const URL = this.configService.get<string>('HARVESTER_API_URL')
     const USERNAME = this.configService.get<string>('HARVESTER_API_USERNAME')
     const PASS = this.configService.get<string>('HARVESTER_API_PASS')
-    this.httpService.get(URL, {
-      auth: {
-        username: USERNAME,
-        password: PASS
-      }
-    }).subscribe(async res => {
-      const networks = res.data
-      this.processNetworks(networks)
-    })
+    try {
+      this.httpService.get(URL, {
+        auth: {
+          username: USERNAME,
+          password: PASS
+        }
+      }).subscribe({
+        next: (res) => {
+          this.logger.debug('Get all OasisBr networks success')
+          const networks = res.data
+          this.processNetworks(networks)
+        },
+        error: (e) => this.logger.error('Get all OasisBr networks error:', e),
+        complete: () => this.logger.debug('complete')
+      })
+    } catch (error) {
+      this.logger.error('HARVESTER_API_PASS: ', error)
+    }
   }
 
   processNetworks(networks: any[]) {

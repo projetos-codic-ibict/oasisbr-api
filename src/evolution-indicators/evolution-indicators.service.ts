@@ -30,30 +30,82 @@ export class EvolutionIndicatorsService {
       todayMinusOneYear.setFullYear(todayMinusOneYear.getFullYear() - 1);
       init = todayMinusOneYear
       end = new Date()
+    } else {
+      init = new Date(init)
+      end = new Date(end)
     }
+    console.log('init: ', init)
+    console.log('end: ', end)
     return this.indicatorModel
-      .find(
+      .aggregate([
         {
-          sourceType: {
-            $in: [
-              'Revista Científica',
-              'Biblioteca Digital de Teses e Dissertações',
-              'Repositório de Dados de Pesquisa',
-              'Repositório de Publicações',
-              'Portal Agregador',
-              'Biblioteca Digital de Monografias',
-              'Servidor de Preprints'
-            ],
-          },
-          createdAt: {
-            $gte: init,
-            $lte: end
+          $match: {
+            createdAt: {
+              $gte: init,
+              $lte: end
+            },
+            sourceType: {
+              $in: [
+                'Revista Científica',
+                'Biblioteca Digital de Teses e Dissertações',
+                'Repositório de Dados de Pesquisa',
+                'Repositório de Publicações',
+                'Portal Agregador',
+                'Biblioteca Digital de Monografias',
+                'Servidor de Preprints'
+              ],
+            },
           }
         },
-        'sourceType createdAt numberOfNetworks numberOfDocuments',
-      )
+        { $addFields: { createdAt: { $toDate: "$createdAt" } } },
+        { $sort: { createdAt: -1 } },
+        {
+          $group: {
+            _id: {
+              id: "$id",
+              sourceType: "$sourceType",
+              month: { $month: "$createdAt" },
+              year: { $year: "$createdAt" }
+            },
+            content: {
+              $first: {
+                createdAt: "$createdAt",
+                numberOfNetworks: "$numberOfNetworks",
+                numberOfDocuments: "$numberOfDocuments",
+                sourceType: "$sourceType"
+              },
+            }
+          }
+        },
+        // {
+        //   $group: {
+        //     _id: "$_id.id",
+        //     content: { $push: "$content" },
+        //   },
+        // }
+      ])
+      // .find(
+      //   {
+      //     sourceType: {
+      //       $in: [
+      //         'Revista Científica',
+      //         'Biblioteca Digital de Teses e Dissertações',
+      //         'Repositório de Dados de Pesquisa',
+      //         'Repositório de Publicações',
+      //         'Portal Agregador',
+      //         'Biblioteca Digital de Monografias',
+      //         'Servidor de Preprints'
+      //       ],
+      //     },
+      //     createdAt: {
+      //       $gte: init,
+      //       $lte: end
+      //     }
+      //   },
+      //   'sourceType createdAt numberOfNetworks numberOfDocuments',
+      // )
       .collation({ locale: 'pt' })
-      .sort({ createdAt: 1 })
+      .sort({ "content.createdAt": 1 })
       .exec();
   }
 

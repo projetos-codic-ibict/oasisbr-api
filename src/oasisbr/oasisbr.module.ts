@@ -17,7 +17,12 @@ import { OasisbrService } from './oasisbr.service';
 
 @Module({
   imports: [
-    HttpModule,
+    HttpModule.registerAsync({
+      useFactory: () => ({
+        timeout: 60000,
+        maxRedirects: 5,
+      }),
+    }),
     NetworksModule,
     IndicatorsModule,
     EvolutionIndicatorsModule,
