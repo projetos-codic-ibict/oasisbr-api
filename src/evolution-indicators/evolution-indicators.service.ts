@@ -34,8 +34,10 @@ export class EvolutionIndicatorsService {
       init = new Date(init)
       end = new Date(end)
     }
-    console.log('init: ', init)
-    console.log('end: ', end)
+    /* foi adicionado o aggregate para filtrar 
+    somente os indicadores do último dia de cada mês. 
+    Isso porque o serviço que insere os indicadores 
+    está rodando diariamente */
     return this.indicatorModel
       .aggregate([
         {
