@@ -8,4 +8,5 @@ export class NetworkDto {
   sourceUrl: string;
   email: string;
   validSize: number;
+  updatedAt: Date = new Date();
 }

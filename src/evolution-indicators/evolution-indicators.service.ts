@@ -120,10 +120,8 @@ export class EvolutionIndicatorsService {
         network.sourceType = 'Indefinido';
       }
       if (indicatorsMap.get(network.sourceType)) {
-        indicatorsMap.get(network.sourceType).numberOfNetworks =
-          indicatorsMap.get(network.sourceType).numberOfNetworks + 1;
-        indicatorsMap.get(network.sourceType).numberOfDocuments +
-          network.validSize;
+        indicatorsMap.get(network.sourceType).numberOfNetworks += 1;
+        indicatorsMap.get(network.sourceType).numberOfDocuments += network.validSize;
       } else {
         indicatorsMap.set(
           network.sourceType,
