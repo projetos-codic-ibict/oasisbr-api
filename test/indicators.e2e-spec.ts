@@ -27,11 +27,7 @@ describe('/indicators (Indicadors endpoint)', () => {
       instance: { dbName: 'oasisbr_test' },
     });
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [
-        MongooseTestModule(),
-        HttpModule,
-        AppModule,
-      ],
+      imports: [MongooseTestModule(), HttpModule, AppModule],
       providers: [
         ConfigService,
         OasisbrService,

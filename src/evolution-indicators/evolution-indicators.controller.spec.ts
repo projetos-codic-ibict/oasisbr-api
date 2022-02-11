@@ -57,7 +57,9 @@ describe('IndicatorsController', () => {
       },
     ];
     it('should return an array of all networks', async () => {
-      jest.spyOn(indicatorsService, 'findByDates').mockResolvedValue(indicators);
+      jest
+        .spyOn(indicatorsService, 'findByDates')
+        .mockResolvedValue(indicators);
 
       expect(await controller.find()).toBe(indicators);
     });

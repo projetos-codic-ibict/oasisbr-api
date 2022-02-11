@@ -19,7 +19,9 @@ describe('NetworksService', () => {
       ],
     }).compile();
 
-    sourceModel = module.get<Model<NetworkDocument>>(getModelToken(Network.name));
+    sourceModel = module.get<Model<NetworkDocument>>(
+      getModelToken(Network.name),
+    );
     service = module.get<NetworksService>(NetworksService);
   });
 

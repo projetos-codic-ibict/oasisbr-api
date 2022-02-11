@@ -9,7 +9,7 @@ export class NetworksService {
   constructor(
     @InjectModel(Network.name)
     private networkModel: Model<NetworkDocument>,
-  ) { }
+  ) {}
 
   async create(networkDto: NetworkDto) {
     const network = new this.networkModel(networkDto);
@@ -41,7 +41,7 @@ export class NetworksService {
   }
 
   findByNetworkName(name: string): Network | PromiseLike<Network> {
-    return this.networkModel.findOne({ name: name }).exec()
+    return this.networkModel.findOne({ name: name }).exec();
   }
 
   async update(id: number, networkDto: NetworkDto) {

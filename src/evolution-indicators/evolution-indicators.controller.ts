@@ -5,7 +5,7 @@ import { EvolutionIndicator } from './schemas/evolution-indicator.schema';
 
 @Controller('evolution-indicators')
 export class EvolutionIndicatorsController {
-  constructor(private readonly indicatorsService: EvolutionIndicatorsService) { }
+  constructor(private readonly indicatorsService: EvolutionIndicatorsService) {}
 
   @Get()
   @ApiQuery({ name: 'init', required: false })

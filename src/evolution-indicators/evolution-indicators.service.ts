@@ -10,10 +10,10 @@ import {
 
 @Injectable()
 export class EvolutionIndicatorsService {
-  constructor (
+  constructor(
     @InjectModel(EvolutionIndicator.name)
     private indicatorModel: Model<EvolutionIndicatorDocument>,
-  ) { }
+  ) {}
 
   async create(indicatorDto: EvolutionIndicatorDto) {
     const indicator = new this.indicatorModel(indicatorDto);
@@ -28,87 +28,89 @@ export class EvolutionIndicatorsService {
     if (!init && !end) {
       const todayMinusOneYear = new Date();
       todayMinusOneYear.setFullYear(todayMinusOneYear.getFullYear() - 1);
-      init = todayMinusOneYear
-      end = new Date()
+      init = todayMinusOneYear;
+      end = new Date();
     } else {
-      init = new Date(init)
-      end = new Date(end)
+      init = new Date(init);
+      end = new Date(end);
     }
     /* foi adicionado o aggregate para filtrar 
     somente os indicadores do último dia de cada mês. 
     Isso porque o serviço que insere os indicadores 
     está rodando diariamente */
-    return this.indicatorModel
-      .aggregate([
-        {
-          $match: {
-            createdAt: {
-              $gte: init,
-              $lte: end
-            },
-            sourceType: {
-              $in: [
-                'Revista Científica',
-                'Biblioteca Digital de Teses e Dissertações',
-                'Repositório de Dados de Pesquisa',
-                'Repositório de Publicações',
-                'Portal Agregador',
-                'Biblioteca Digital de Monografias',
-                'Servidor de Preprints'
-              ],
-            },
-          }
-        },
-        { $addFields: { createdAt: { $toDate: "$createdAt" } } },
-        { $sort: { createdAt: -1 } },
-        {
-          $group: {
-            _id: {
-              id: "$id",
-              sourceType: "$sourceType",
-              month: { $month: "$createdAt" },
-              year: { $year: "$createdAt" }
-            },
-            content: {
-              $first: {
-                createdAt: "$createdAt",
-                numberOfNetworks: "$numberOfNetworks",
-                numberOfDocuments: "$numberOfDocuments",
-                sourceType: "$sourceType"
+    return (
+      this.indicatorModel
+        .aggregate([
+          {
+            $match: {
+              createdAt: {
+                $gte: init,
+                $lte: end,
               },
-            }
-          }
-        },
-        // {
-        //   $group: {
-        //     _id: "$_id.id",
-        //     content: { $push: "$content" },
+              sourceType: {
+                $in: [
+                  'Revista Científica',
+                  'Biblioteca Digital de Teses e Dissertações',
+                  'Repositório de Dados de Pesquisa',
+                  'Repositório de Publicações',
+                  'Portal Agregador',
+                  'Biblioteca Digital de Monografias',
+                  'Servidor de Preprints',
+                ],
+              },
+            },
+          },
+          { $addFields: { createdAt: { $toDate: '$createdAt' } } },
+          { $sort: { createdAt: -1 } },
+          {
+            $group: {
+              _id: {
+                id: '$id',
+                sourceType: '$sourceType',
+                month: { $month: '$createdAt' },
+                year: { $year: '$createdAt' },
+              },
+              content: {
+                $first: {
+                  createdAt: '$createdAt',
+                  numberOfNetworks: '$numberOfNetworks',
+                  numberOfDocuments: '$numberOfDocuments',
+                  sourceType: '$sourceType',
+                },
+              },
+            },
+          },
+          // {
+          //   $group: {
+          //     _id: "$_id.id",
+          //     content: { $push: "$content" },
+          //   },
+          // }
+        ])
+        // .find(
+        //   {
+        //     sourceType: {
+        //       $in: [
+        //         'Revista Científica',
+        //         'Biblioteca Digital de Teses e Dissertações',
+        //         'Repositório de Dados de Pesquisa',
+        //         'Repositório de Publicações',
+        //         'Portal Agregador',
+        //         'Biblioteca Digital de Monografias',
+        //         'Servidor de Preprints'
+        //       ],
+        //     },
+        //     createdAt: {
+        //       $gte: init,
+        //       $lte: end
+        //     }
         //   },
-        // }
-      ])
-      // .find(
-      //   {
-      //     sourceType: {
-      //       $in: [
-      //         'Revista Científica',
-      //         'Biblioteca Digital de Teses e Dissertações',
-      //         'Repositório de Dados de Pesquisa',
-      //         'Repositório de Publicações',
-      //         'Portal Agregador',
-      //         'Biblioteca Digital de Monografias',
-      //         'Servidor de Preprints'
-      //       ],
-      //     },
-      //     createdAt: {
-      //       $gte: init,
-      //       $lte: end
-      //     }
-      //   },
-      //   'sourceType createdAt numberOfNetworks numberOfDocuments',
-      // )
-      .collation({ locale: 'pt' })
-      .sort({ "content.createdAt": 1 })
-      .exec();
+        //   'sourceType createdAt numberOfNetworks numberOfDocuments',
+        // )
+        .collation({ locale: 'pt' })
+        .sort({ 'content.createdAt': 1 })
+        .exec()
+    );
   }
 
   async processIndicator(networkDtos: NetworkDto[]) {
@@ -121,7 +123,8 @@ export class EvolutionIndicatorsService {
       }
       if (indicatorsMap.get(network.sourceType)) {
         indicatorsMap.get(network.sourceType).numberOfNetworks += 1;
-        indicatorsMap.get(network.sourceType).numberOfDocuments += network.validSize;
+        indicatorsMap.get(network.sourceType).numberOfDocuments +=
+          network.validSize;
       } else {
         indicatorsMap.set(
           network.sourceType,

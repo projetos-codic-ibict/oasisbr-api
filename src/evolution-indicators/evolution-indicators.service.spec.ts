@@ -25,7 +25,9 @@ describe('IndicatorsService', () => {
     indicatorModel = module.get<Model<EvolutionIndicatorDocument>>(
       getModelToken(EvolutionIndicator.name),
     );
-    service = module.get<EvolutionIndicatorsService>(EvolutionIndicatorsService);
+    service = module.get<EvolutionIndicatorsService>(
+      EvolutionIndicatorsService,
+    );
   });
 
   describe('findAll', () => {

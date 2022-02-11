@@ -17,7 +17,7 @@ export class IndicatorsService {
     private indicatorModel: Model<IndicatorDocument>,
     private httpService: HttpService,
     private configService: ConfigService,
-  ) { }
+  ) {}
 
   async findAll(): Promise<Indicator[]> {
     return this.indicatorModel.find({}, 'name value').exec();

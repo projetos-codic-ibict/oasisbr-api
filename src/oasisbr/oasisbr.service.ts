@@ -23,27 +23,29 @@ export class OasisbrService {
   // @Cron(CronExpression.EVERY_5_MINUTES)
   @Cron(CronExpression.EVERY_DAY_AT_7AM)
   loadOasisbrNetworks() {
-    this.logger.debug('Get all OasisBr networks')
-    const URL = this.configService.get<string>('HARVESTER_API_URL')
-    const USERNAME = this.configService.get<string>('HARVESTER_API_USERNAME')
-    const PASS = this.configService.get<string>('HARVESTER_API_PASS')
+    this.logger.debug('Get all OasisBr networks');
+    const URL = this.configService.get<string>('HARVESTER_API_URL');
+    const USERNAME = this.configService.get<string>('HARVESTER_API_USERNAME');
+    const PASS = this.configService.get<string>('HARVESTER_API_PASS');
     try {
-      this.httpService.get(URL, {
-        auth: {
-          username: USERNAME,
-          password: PASS
-        }
-      }).subscribe({
-        next: (res) => {
-          this.logger.debug('Get all OasisBr networks success')
-          const networks = res.data
-          this.processNetworks(networks)
-        },
-        error: (e) => this.logger.error('Get all OasisBr networks error:', e),
-        complete: () => this.logger.debug('complete')
-      })
+      this.httpService
+        .get(URL, {
+          auth: {
+            username: USERNAME,
+            password: PASS,
+          },
+        })
+        .subscribe({
+          next: (res) => {
+            this.logger.debug('Get all OasisBr networks success');
+            const networks = res.data;
+            this.processNetworks(networks);
+          },
+          error: (e) => this.logger.error('Get all OasisBr networks error:', e),
+          complete: () => this.logger.debug('complete'),
+        });
     } catch (error) {
-      this.logger.error('HARVESTER_API_PASS: ', error)
+      this.logger.error('HARVESTER_API_PASS: ', error);
     }
   }
 
@@ -67,7 +69,7 @@ export class OasisbrService {
       networkDtos.push(networkDto);
     });
     this.updateNetworks(networkDtos);
-    this.evolutionIndicatorsService.processIndicator(networkDtos);
+    // this.evolutionIndicatorsService.processIndicator(networkDtos);
     this.indicatorsService.processIndicatorBySourceType(networkDtos);
   }
 

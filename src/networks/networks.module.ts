@@ -11,4 +11,4 @@ import { Network, NetworkSchema } from './schemas/network.schema';
   controllers: [NetworksController],
   providers: [NetworksService],
 })
-export class NetworksModule { }
+export class NetworksModule {}

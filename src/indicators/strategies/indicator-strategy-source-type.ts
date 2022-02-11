@@ -5,7 +5,7 @@ import { IndicatorsService } from '../indicators.service';
 import { IndicatorStrategy } from './indicator.strategy.interface';
 
 export class IndicatorBySourceType implements IndicatorStrategy {
-  constructor(private readonly indicatorsService: IndicatorsService) { }
+  constructor(private readonly indicatorsService: IndicatorsService) {}
   processIndicator(networksDtos: NetworkDto[]) {
     console.debug(`processIndicatorsDocumentByType`);
     const indicatorsMap: Map<string, IndicatorDto> = new Map();

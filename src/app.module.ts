@@ -35,4 +35,4 @@ import { IndicatorsModule } from './indicators/indicators.module';
   controllers: [AppController],
   providers: [Logger, AppService],
 })
-export class AppModule { }
+export class AppModule {}

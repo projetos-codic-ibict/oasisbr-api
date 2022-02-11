@@ -5,7 +5,7 @@ import { Network } from './schemas/network.schema';
 
 @Controller('networks')
 export class NetworksController {
-  constructor(private readonly networksService: NetworksService) { }
+  constructor(private readonly networksService: NetworksService) {}
 
   @Get()
   @ApiResponse({ status: 200, type: Network, isArray: true })
@@ -13,12 +13,10 @@ export class NetworksController {
     return this.networksService.findAll();
   }
 
-
-
   @Get('/:name')
   @ApiResponse({ status: 200, type: Network })
   async findById(@Param('name') name: string): Promise<Network> {
-    console.log('name', name)
-    return this.networksService.findByNetworkName(name)
+    console.log('name', name);
+    return this.networksService.findByNetworkName(name);
   }
 }
