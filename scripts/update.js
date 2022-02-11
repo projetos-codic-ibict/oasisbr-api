@@ -1,5 +1,5 @@
 // remove dados de janeiro e fevereiro de 2022
-db.getCollection('evolution_indicators').remove({ createdAt: { $gte: ISODate("2022-01-01T00:00:00.000Z") } })
+db.getCollection('evolution_indicators').remove({ createdAt: { $gte: ISODate("2022-01-01T00:00:00.000Z") } });
 
 // janeiro
 db.evolution_indicators.insert({ 'sourceType': 'Biblioteca Digital de Teses e Dissertações', 'numberOfNetworks': 60, 'numberOfDocuments': 298181, 'createdAt': new ISODate('2022-01-02'), '__v': 0 });

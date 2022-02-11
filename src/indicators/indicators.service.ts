@@ -12,12 +12,12 @@ import { getUsefulNameSourceType } from '../utils/SourceTypeFormat';
 
 @Injectable()
 export class IndicatorsService {
-  constructor(
+  constructor (
     @InjectModel(Indicator.name)
     private indicatorModel: Model<IndicatorDocument>,
     private httpService: HttpService,
     private configService: ConfigService,
-  ) {}
+  ) { }
 
   async findAll(): Promise<Indicator[]> {
     return this.indicatorModel.find({}, 'name value').exec();
@@ -84,8 +84,7 @@ export class IndicatorsService {
           network.sourceType = 'Indefinido';
         }
         if (indicatorsDtoMap.get(network.sourceType)) {
-          indicatorsDtoMap.get(network.sourceType).value =
-            indicatorsDtoMap.get(network.sourceType).value + 1;
+          indicatorsDtoMap.get(network.sourceType).value += 1;
         } else {
           indicatorsDtoMap.set(
             network.sourceType,
