@@ -6,10 +6,10 @@ import { Network, NetworkDocument } from './schemas/network.schema';
 
 @Injectable()
 export class NetworksService {
-  constructor(
+  constructor (
     @InjectModel(Network.name)
     private networkModel: Model<NetworkDocument>,
-  ) {}
+  ) { }
 
   async create(networkDto: NetworkDto) {
     const network = new this.networkModel(networkDto);
@@ -25,13 +25,9 @@ export class NetworksService {
       .find(
         {},
         {
-          _id: 0,
-          issn: 1,
+          id: 1,
           name: 1,
           institution: 1,
-          sourceUrl: 1,
-          sourceType: 1,
-          email: 1,
           validSize: 1,
         },
       )
@@ -40,8 +36,8 @@ export class NetworksService {
       .exec();
   }
 
-  findByNetworkName(name: string): Network | PromiseLike<Network> {
-    return this.networkModel.findOne({ name: name }).exec();
+  findByNetworkById(id: number): Network | PromiseLike<Network> {
+    return this.networkModel.findOne({ id: id }).exec();
   }
 
   async update(id: number, networkDto: NetworkDto) {
