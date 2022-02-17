@@ -29,6 +29,7 @@ export class NetworksService {
           name: 1,
           institution: 1,
           validSize: 1,
+          sourceType: 1,
         },
       )
       .collation({ locale: 'pt' })
