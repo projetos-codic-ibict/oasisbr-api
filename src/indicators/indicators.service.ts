@@ -12,12 +12,12 @@ import { getUsefulNameSourceType } from '../utils/SourceTypeFormat';
 
 @Injectable()
 export class IndicatorsService {
-  constructor (
+  constructor(
     @InjectModel(Indicator.name)
     private indicatorModel: Model<IndicatorDocument>,
     private httpService: HttpService,
     private configService: ConfigService,
-  ) { }
+  ) {}
 
   async findAll(): Promise<Indicator[]> {
     return this.indicatorModel.find({}, 'name value').exec();

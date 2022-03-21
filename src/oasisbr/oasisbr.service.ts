@@ -11,14 +11,14 @@ import { getUsefulNameSourceType } from '../utils/SourceTypeFormat';
 
 @Injectable()
 export class OasisbrService {
-  constructor (
+  constructor(
     private httpService: HttpService,
     private configService: ConfigService,
     private readonly networksService: NetworksService,
     private readonly evolutionIndicatorsService: EvolutionIndicatorsService,
     private readonly indicatorsService: IndicatorsService,
     private readonly logger: Logger,
-  ) { }
+  ) {}
 
   // @Cron(CronExpression.EVERY_MINUTE)
   @Cron(CronExpression.EVERY_DAY_AT_7AM)

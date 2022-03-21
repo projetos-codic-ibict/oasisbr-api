@@ -6,10 +6,10 @@ import { Network, NetworkDocument } from './schemas/network.schema';
 
 @Injectable()
 export class NetworksService {
-  constructor (
+  constructor(
     @InjectModel(Network.name)
     private networkModel: Model<NetworkDocument>,
-  ) { }
+  ) {}
 
   async create(networkDto: NetworkDto) {
     const network = new this.networkModel(networkDto);

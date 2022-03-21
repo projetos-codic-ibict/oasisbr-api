@@ -37,6 +37,7 @@ describe('NetworksService', () => {
           sourceType: 'Revista',
           sourceUrl: 'url',
           validSize: 10,
+          updatedAt: new Date(),
         },
         {
           id: 99,
@@ -47,6 +48,7 @@ describe('NetworksService', () => {
           sourceType: 'Revista',
           sourceUrl: 'url',
           validSize: 10,
+          updatedAt: new Date(),
         },
       ];
       jest.spyOn(sourceModel, 'find').mockReturnValue({

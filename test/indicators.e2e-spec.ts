@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { AppModule } from '../src/app.module';
 import * as request from 'supertest';
-import { INestApplication } from '@nestjs/common';
-import { getModelToken, MongooseModule } from '@nestjs/mongoose';
+import { INestApplication, Logger } from '@nestjs/common';
+import { getModelToken } from '@nestjs/mongoose';
 import {
   MongooseTestModule,
   closeMongoTestConnection,
@@ -11,19 +11,23 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { OasisbrService } from '../src/oasisbr/oasisbr.service';
 import { NetworksService } from '../src/networks/networks.service';
-import { Source, SourceDocument } from '../src/networks/schemas/network.schema';
+import {
+  Network,
+  NetworkDocument,
+} from '../src/networks/schemas/network.schema';
 import { Model } from 'mongoose';
 import { HttpModule } from '@nestjs/axios';
 import { IndicatorsService } from '../src/indicators/indicators.service';
 import { EvolutionIndicatorsService } from '../src/evolution-indicators/evolution-indicators.service';
 import { EvolutionIndicator } from '../src/evolution-indicators/schemas/evolution-indicator.schema';
+import { Indicator } from '../src/indicators/schemas/indicator.schema';
 
 describe('/indicators (Indicadors endpoint)', () => {
   let app: INestApplication;
   let oasisService: OasisbrService;
 
   beforeAll(async () => {
-    const mongoServer = await MongoMemoryServer.create({
+    await MongoMemoryServer.create({
       instance: { dbName: 'oasisbr_test' },
     });
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -34,8 +38,9 @@ describe('/indicators (Indicadors endpoint)', () => {
         NetworksService,
         IndicatorsService,
         EvolutionIndicatorsService,
+        Logger,
         {
-          provide: getModelToken(Source.name),
+          provide: getModelToken(Network.name),
           useValue: Model,
         },
         {
@@ -49,7 +54,7 @@ describe('/indicators (Indicadors endpoint)', () => {
       ],
     }).compile();
 
-    moduleFixture.get<Model<SourceDocument>>(getModelToken(Source.name));
+    moduleFixture.get<Model<NetworkDocument>>(getModelToken(Network.name));
     oasisService = moduleFixture.get<OasisbrService>(OasisbrService);
     app = moduleFixture.createNestApplication();
     await app.init();

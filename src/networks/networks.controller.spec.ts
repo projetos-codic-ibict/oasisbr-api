@@ -3,7 +3,7 @@ import { Model } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { NetworksController } from './networks.controller';
 import { NetworksService } from './networks.service';
-import { Source } from './schemas/network.schema';
+import { Network } from './schemas/network.schema';
 
 describe('NetworksController', () => {
   let controller: NetworksController;
@@ -15,7 +15,7 @@ describe('NetworksController', () => {
       providers: [
         NetworksService,
         {
-          provide: getModelToken(Source.name),
+          provide: getModelToken(Network.name),
           useValue: Model,
         },
       ],
@@ -27,7 +27,7 @@ describe('NetworksController', () => {
 
   describe('findAll', () => {
     it('should return an array of networks', async () => {
-      const networks: Source[] = [
+      const networks: Network[] = [
         {
           id: 99,
           issn: '99',
@@ -37,6 +37,7 @@ describe('NetworksController', () => {
           sourceType: 'Revista',
           sourceUrl: 'url',
           validSize: 10,
+          updatedAt: new Date(),
         },
       ];
       jest.spyOn(networksService, 'findAll').mockResolvedValue(networks);

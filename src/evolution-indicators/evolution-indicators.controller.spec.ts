@@ -61,7 +61,7 @@ describe('IndicatorsController', () => {
         .spyOn(indicatorsService, 'findByDates')
         .mockResolvedValue(indicators);
 
-      expect(await controller.find()).toBe(indicators);
+      expect(await controller.find(null, null)).toBe(indicators);
     });
   });
 });

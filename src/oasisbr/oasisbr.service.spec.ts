@@ -7,12 +7,10 @@ import { Model } from 'mongoose';
 import { Network, NetworkDocument } from '../networks/schemas/network.schema';
 import { getModelToken } from '@nestjs/mongoose';
 import { IndicatorsService } from '../indicators/indicators.service';
-import {
-  Indicator,
-  IndicatorDocument,
-} from '../indicators/schemas/indicator.schema';
+import { Indicator } from '../indicators/schemas/indicator.schema';
 import { EvolutionIndicator } from '../evolution-indicators/schemas/evolution-indicator.schema';
 import { EvolutionIndicatorsService } from '../evolution-indicators/evolution-indicators.service';
+import { Logger } from '@nestjs/common';
 
 describe('OasisbrService', () => {
   let service: OasisbrService;
@@ -26,8 +24,9 @@ describe('OasisbrService', () => {
         NetworksService,
         IndicatorsService,
         EvolutionIndicatorsService,
+        Logger,
         {
-          provide: getModelToken(Source.name),
+          provide: getModelToken(Network.name),
           useValue: Model,
         },
         {
@@ -40,7 +39,7 @@ describe('OasisbrService', () => {
         },
       ],
     }).compile();
-    module.get<Model<SourceDocument>>(getModelToken(Source.name));
+    module.get<Model<NetworkDocument>>(getModelToken(Network.name));
     service = module.get<OasisbrService>(OasisbrService);
   });
 

@@ -53,16 +53,18 @@ describe('IndicatorsService', () => {
         },
       ];
       jest.spyOn(indicatorModel, 'find').mockReturnValue({
-        collation: jest.fn().mockReturnValue({
-          sort: jest.fn().mockReturnValue({
-            exec: jest
-              .fn()
-              .mockResolvedValue(indicators as EvolutionIndicatorDocument[]),
+        aggregate: jest.fn().mockReturnValue({
+          collation: jest.fn().mockReturnValue({
+            sort: jest.fn().mockReturnValue({
+              exec: jest
+                .fn()
+                .mockResolvedValue(indicators as EvolutionIndicatorDocument[]),
+            } as unknown),
           } as unknown),
         } as unknown),
       } as unknown as Query<EvolutionIndicatorDocument[], EvolutionIndicatorDocument>);
 
-      expect(await service.findAll()).toBe(indicators);
+      expect(await service.findByDates(null, null)).toBe(indicators);
     });
   });
 });

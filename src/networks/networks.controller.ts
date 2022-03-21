@@ -5,7 +5,7 @@ import { Network } from './schemas/network.schema';
 
 @Controller('networks')
 export class NetworksController {
-  constructor (private readonly networksService: NetworksService) { }
+  constructor(private readonly networksService: NetworksService) {}
 
   @Get()
   @ApiResponse({ status: 200, type: Network, isArray: true })

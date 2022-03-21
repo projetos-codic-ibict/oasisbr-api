@@ -1,8 +1,7 @@
 export const getUsefulNameSourceType = (sourceType: string) => {
   if (!sourceType) {
-    return null
-  }
-  else if (
+    return null;
+  } else if (
     sourceType === 'Repositório de Dados' ||
     sourceType === 'Repositório de Dados de Pesquisa'
   ) {
