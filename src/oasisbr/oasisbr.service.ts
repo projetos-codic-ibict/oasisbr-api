@@ -69,7 +69,7 @@ export class OasisbrService {
       networkDtos.push(networkDto);
     });
     this.updateNetworks(networkDtos);
-    // this.evolutionIndicatorsService.processIndicator(networkDtos);
+    this.evolutionIndicatorsService.processIndicator(networkDtos);
     this.indicatorsService.processIndicatorBySourceType(networkDtos);
   }
 
