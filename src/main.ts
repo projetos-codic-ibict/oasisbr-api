@@ -37,8 +37,6 @@ if (process.env.NODE_ENV === 'production') {
   transports.push(fileTransport);
 }
 
-console.log(process.env.NODE_ENV, transports.length);
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: WinstonModule.createLogger({
