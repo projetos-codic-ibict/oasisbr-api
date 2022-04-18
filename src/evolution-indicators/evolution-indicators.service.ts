@@ -54,7 +54,7 @@ export class EvolutionIndicatorsService {
                   'Repositório de Dados de Pesquisa',
                   'Repositório de Publicações',
                   'Portal Agregador',
-                  'Biblioteca Digital de Monografias',
+                  'Biblioteca Digital de Monografia',
                   'Servidor de Preprints',
                 ],
               },
