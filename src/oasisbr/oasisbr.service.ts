@@ -20,8 +20,8 @@ export class OasisbrService {
     private readonly logger: Logger,
   ) {}
 
-  @Cron(CronExpression.EVERY_MINUTE)
-  // @Cron(CronExpression.EVERY_DAY_AT_7AM)
+  // @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_DAY_AT_7AM)
   loadOasisbrNetworks() {
     this.logger.debug('Get all OasisBr networks');
     const URL = this.configService.get<string>('HARVESTER_API_URL');
