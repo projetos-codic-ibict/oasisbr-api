@@ -1,6 +1,6 @@
 export class NetworkDto {
   id: number;
-  network_name_str;
+  acronym: string;
   issn: string;
   name: string;
   institution: string;

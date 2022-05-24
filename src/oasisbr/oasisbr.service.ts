@@ -55,6 +55,7 @@ export class OasisbrService {
     networks.forEach((network) => {
       const networkDto = new NetworkDto();
       networkDto.id = network.networkID;
+      networkDto.acronym = network.acronym;
       networkDto.name = network.name;
       networkDto.institution = network.institution;
       networkDto.validSize = network.validSize;

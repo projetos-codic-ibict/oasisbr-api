@@ -10,6 +10,10 @@ export class Network {
   id: number;
 
   @ApiProperty()
+  @Prop({ required: true })
+  acronym: string;
+
+  @ApiProperty()
   @Prop()
   issn: string;
 

@@ -26,6 +26,7 @@ export class NetworksService {
         {},
         {
           id: 1,
+          acronym: 1,
           name: 1,
           institution: 1,
           validSize: 1,
