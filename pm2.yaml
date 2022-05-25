@@ -2,7 +2,7 @@ apps:
   - script: ./dist/main.js
     name: oasisbr-api
     watch: true
-    instances: max
+    instances: 2
     exec_mode: cluster
     env:
       PORT: ${SERVER_PORT}
