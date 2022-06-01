@@ -50,7 +50,7 @@ export class NetworksService {
 
   private async removeAll() {
     this.logger.log(`removing all networks`);
-    await this.networkModel.remove({});
+    await this.networkModel.deleteMany();
     this.logger.log(`all networks removed`);
   }
 
