@@ -20,10 +20,10 @@ export class OasisbrService {
     private readonly logger: Logger,
   ) {}
 
-  // @Cron(CronExpression.EVERY_MINUTE)
-  @Cron(CronExpression.EVERY_DAY_AT_7AM)
+  @Cron(CronExpression.EVERY_MINUTE)
+  // @Cron(CronExpression.EVERY_HOUR)
   loadOasisbrNetworks() {
-    this.logger.debug('Get all OasisBr networks');
+    this.logger.log('Get all OasisBr networks');
     const URL = this.configService.get<string>('HARVESTER_API_URL');
     const USERNAME = this.configService.get<string>('HARVESTER_API_USERNAME');
     const PASS = this.configService.get<string>('HARVESTER_API_PASS');
@@ -37,12 +37,12 @@ export class OasisbrService {
         })
         .subscribe({
           next: (res) => {
-            this.logger.debug('Get all OasisBr networks success');
+            this.logger.log('Get all OasisBr networks success');
             const networks = res.data;
             this.processNetworks(networks);
           },
           error: (e) => this.logger.error('Get all OasisBr networks error:', e),
-          complete: () => this.logger.debug('complete'),
+          complete: () => this.logger.log('Get all OasisBr networks finished'),
         });
     } catch (error) {
       this.logger.error('HARVESTER_API_PASS: ', error);
@@ -76,9 +76,7 @@ export class OasisbrService {
 
   private async updateNetworks(networkDtos: Array<NetworkDto>) {
     this.logger.log(`init updateNetworks`);
-    networkDtos.forEach(async (networkDto) => {
-      await this.networksService.update(networkDto.id, networkDto);
-    });
+    await this.networksService.removeAllAndInsertAll(networkDtos);
     this.logger.log(`finish updateNetworks`);
   }
 }
