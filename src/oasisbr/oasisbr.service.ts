@@ -50,7 +50,7 @@ export class OasisbrService {
   }
 
   processNetworks(networks: any[]) {
-    this.logger.debug(`init processNetworks`);
+    this.logger.debug(`qtd networks to process: ${networks.length}`);
     const networkDtos: Array<NetworkDto> = [];
     networks.forEach((network) => {
       const networkDto = new NetworkDto();
@@ -75,7 +75,7 @@ export class OasisbrService {
   }
 
   private async updateNetworks(networkDtos: Array<NetworkDto>) {
-    this.logger.log(`init updateNetworks`);
+    this.logger.log(`init updateNetworks, qtd: ${networkDtos.length}`);
     await this.networksService.removeAllAndInsertAll(networkDtos);
     this.logger.log(`finish updateNetworks`);
   }
