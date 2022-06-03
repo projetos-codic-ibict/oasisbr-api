@@ -58,7 +58,11 @@ export class NetworksService {
   }
 
   async removeAllAndInsertAll(networkDtos: Array<NetworkDto>) {
-    await this.removeAll();
-    await this.createMany(networkDtos);
+    try {
+      await this.removeAll();
+      await this.createMany(networkDtos);
+    } catch (err) {
+      console.error(err);
+    }
   }
 }

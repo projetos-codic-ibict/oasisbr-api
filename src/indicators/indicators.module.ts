@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { MongooseModule } from '@nestjs/mongoose';
 import { IndicatorsController } from './indicators.controller';
@@ -13,6 +13,6 @@ import { Indicator, IndicatorSchema } from './schemas/indicator.schema';
     ]),
   ],
   controllers: [IndicatorsController],
-  providers: [IndicatorsService],
+  providers: [IndicatorsService, Logger],
 })
 export class IndicatorsModule {}

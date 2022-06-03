@@ -14,8 +14,6 @@ export class IndicatorsController {
   find(@Query('type') type: IndicatorType) {
     if (type === IndicatorType.SOURCE_TYPE) {
       return this.indicatorsService.findByType(type);
-    } else if (type != null) {
-      return this.indicatorsService.getFromSolr(type);
     }
     return this.indicatorsService.findAll();
   }

@@ -1,13 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { NetworkDto } from '../networks/dto/network.dto';
 import { IndicatorDto } from './dto/indicator.dto';
 import { IndicatorType } from './enums/indicator-type.enum';
 import { Indicator, IndicatorDocument } from './schemas/indicator.schema';
-import { ConfigService } from '@nestjs/config';
-import { HttpService } from '@nestjs/axios';
-import { map } from 'rxjs';
 import { getUsefulNameSourceType } from '../utils/SourceTypeFormat';
 
 @Injectable()
@@ -15,8 +12,7 @@ export class IndicatorsService {
   constructor(
     @InjectModel(Indicator.name)
     private indicatorModel: Model<IndicatorDocument>,
-    private httpService: HttpService,
-    private configService: ConfigService,
+    private readonly logger: Logger,
   ) {}
 
   async findAll(): Promise<Indicator[]> {
@@ -36,38 +32,24 @@ export class IndicatorsService {
     });
   }
 
-  async updateMany(indicatorsDto: IndicatorDto[]) {
-    try {
-      indicatorsDto.forEach(async (indicatorDto) => {
-        await this.update(indicatorDto.name, indicatorDto);
-      });
-    } catch (err) {
-      console.error(err);
-    }
+  private async removeByType(type: IndicatorType) {
+    this.logger.log(`removing all indicators`);
+    await this.indicatorModel.deleteMany({ type: type });
+    this.logger.log(`all networks indicators`);
   }
 
-  async getFromSolr(facetField: IndicatorType) {
+  private async createMany(indicatorDtos: Array<IndicatorDto>) {
+    await this.indicatorModel.insertMany(indicatorDtos);
+    this.logger.log(`all networks created again`);
+  }
+
+  private async removeAllAndInsertByType(
+    indicatorsDto: IndicatorDto[],
+    type: IndicatorType,
+  ) {
     try {
-      const URL = this.configService.get<string>('SOLR_URL');
-      return this.httpService
-        .get(
-          `${URL}?facet.field=${facetField}&facet=on&indent=on&q=*:*&rows=0&wt=json&facet.limit=10`,
-        )
-        .pipe(
-          map((response) => {
-            const top10 = response.data.facet_counts.facet_fields[facetField];
-            const indicators = [];
-            for (let i = 0; i < top10.length; i += 2) {
-              const indicatorDto = new IndicatorDto(
-                top10[i],
-                top10[i + 1],
-                null,
-              );
-              indicators.push(indicatorDto);
-            }
-            return indicators;
-          }),
-        );
+      await this.removeByType(type);
+      await this.createMany(indicatorsDto);
     } catch (err) {
       console.error(err);
     }
@@ -93,31 +75,11 @@ export class IndicatorsService {
         }
       });
       const indicatorsDto = Array.from(indicatorsDtoMap.values());
-      this.updateMany(indicatorsDto);
+      this.removeAllAndInsertByType(indicatorsDto, IndicatorType.SOURCE_TYPE);
 
       console.log(`finish updateIndicatorsDocumentByType`);
     } catch (err) {
       console.error(err);
     }
   }
-
-  // getSourceTypeFormat(sourceType: string) {
-  //   if (
-  //     sourceType === 'Repositório de Dados' ||
-  //     sourceType === 'Repositório de Dados de Pesquisa'
-  //   ) {
-  //     return 'Repositório de Dados';
-  //   } else if (
-  //     sourceType === 'Repositório Comum' ||
-  //     sourceType === 'Repositório Institucional' ||
-  //     sourceType === 'Repositório Temático' ||
-  //     sourceType === 'Repositório de Publicações'
-  //   ) {
-  //     return 'Repositório de Publicações';
-  //   } else if (sourceType === 'Revista') {
-  //     return 'Revistas científicas';
-  //   } else {
-  //     return sourceType;
-  //   }
-  // }
 }

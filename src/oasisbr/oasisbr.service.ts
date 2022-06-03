@@ -21,7 +21,7 @@ export class OasisbrService {
   ) {}
 
   // @Cron(CronExpression.EVERY_MINUTE)
-  @Cron(CronExpression.EVERY_HOUR)
+  @Cron(CronExpression.EVERY_2_HOURS)
   loadOasisbrNetworks() {
     this.logger.log('Get all OasisBr networks');
     const URL = this.configService.get<string>('HARVESTER_API_URL');
@@ -70,8 +70,12 @@ export class OasisbrService {
       networkDtos.push(networkDto);
     });
     this.updateNetworks(networkDtos);
-    this.evolutionIndicatorsService.processIndicator(networkDtos);
     this.indicatorsService.processIndicatorBySourceType(networkDtos);
+    const now: Date = new Date();
+    const HOUR_UPDATE_EVOLUTIONS_INDICATORS = 5;
+    if (now.getHours() == HOUR_UPDATE_EVOLUTIONS_INDICATORS) {
+      this.evolutionIndicatorsService.processIndicator(networkDtos);
+    }
   }
 
   private async updateNetworks(networkDtos: Array<NetworkDto>) {
