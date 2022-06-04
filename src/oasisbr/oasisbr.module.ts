@@ -16,6 +16,8 @@ import {
 import { NetworksModule } from '../networks/networks.module';
 import { NetworksService } from '../networks/networks.service';
 import { Network, NetworkSchema } from '../networks/schemas/network.schema';
+import { ParamsService } from '../params/params.service';
+import { Param, ParamSchema } from '../params/schemas/param.schema';
 import { OasisbrService } from './oasisbr.service';
 
 @Module({
@@ -36,6 +38,7 @@ import { OasisbrService } from './oasisbr.service';
     MongooseModule.forFeature([
       { name: EvolutionIndicator.name, schema: EvolutionIndicatorSchema },
     ]),
+    MongooseModule.forFeature([{ name: Param.name, schema: ParamSchema }]),
   ],
   controllers: [],
   providers: [
@@ -43,6 +46,7 @@ import { OasisbrService } from './oasisbr.service';
     NetworksService,
     IndicatorsService,
     EvolutionIndicatorsService,
+    ParamsService,
     Logger,
   ],
 })

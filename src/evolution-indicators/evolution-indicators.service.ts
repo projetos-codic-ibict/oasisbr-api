@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { NetworkDto } from '../networks/dto/network.dto';
@@ -13,6 +13,7 @@ export class EvolutionIndicatorsService {
   constructor(
     @InjectModel(EvolutionIndicator.name)
     private indicatorModel: Model<EvolutionIndicatorDocument>,
+    private readonly logger: Logger,
   ) {}
 
   async create(indicatorDto: EvolutionIndicatorDto) {
@@ -38,83 +39,55 @@ export class EvolutionIndicatorsService {
     somente os indicadores do último dia de cada mês. 
     Isso porque o serviço que insere os indicadores 
     está rodando diariamente */
-    return (
-      this.indicatorModel
-        .aggregate([
-          {
-            $match: {
-              createdAt: {
-                $gte: init,
-                $lte: end,
-              },
-              sourceType: {
-                $in: [
-                  'Revista Científica',
-                  'Biblioteca Digital de Teses e Dissertações',
-                  'Repositório de Dados de Pesquisa',
-                  'Repositório de Publicações',
-                  'Portal Agregador',
-                  'Biblioteca Digital de Monografia',
-                  'Servidor de Preprints',
-                ],
-              },
+    return this.indicatorModel
+      .aggregate([
+        {
+          $match: {
+            createdAt: {
+              $gte: init,
+              $lte: end,
+            },
+            sourceType: {
+              $in: [
+                'Revista Científica',
+                'Biblioteca Digital de Teses e Dissertações',
+                'Repositório de Dados de Pesquisa',
+                'Repositório de Publicações',
+                'Portal Agregador',
+                'Biblioteca Digital de Monografia',
+                'Servidor de Preprints',
+              ],
             },
           },
-          { $addFields: { createdAt: { $toDate: '$createdAt' } } },
-          { $sort: { createdAt: -1 } },
-          {
-            $group: {
-              _id: {
-                id: '$id',
+        },
+        { $addFields: { createdAt: { $toDate: '$createdAt' } } },
+        { $sort: { createdAt: -1 } },
+        {
+          $group: {
+            _id: {
+              id: '$id',
+              sourceType: '$sourceType',
+              month: { $month: '$createdAt' },
+              year: { $year: '$createdAt' },
+            },
+            content: {
+              $first: {
+                createdAt: '$createdAt',
+                numberOfNetworks: '$numberOfNetworks',
+                numberOfDocuments: '$numberOfDocuments',
                 sourceType: '$sourceType',
-                month: { $month: '$createdAt' },
-                year: { $year: '$createdAt' },
-              },
-              content: {
-                $first: {
-                  createdAt: '$createdAt',
-                  numberOfNetworks: '$numberOfNetworks',
-                  numberOfDocuments: '$numberOfDocuments',
-                  sourceType: '$sourceType',
-                },
               },
             },
           },
-          // {
-          //   $group: {
-          //     _id: "$_id.id",
-          //     content: { $push: "$content" },
-          //   },
-          // }
-        ])
-        // .find(
-        //   {
-        //     sourceType: {
-        //       $in: [
-        //         'Revista Científica',
-        //         'Biblioteca Digital de Teses e Dissertações',
-        //         'Repositório de Dados de Pesquisa',
-        //         'Repositório de Publicações',
-        //         'Portal Agregador',
-        //         'Biblioteca Digital de Monografias',
-        //         'Servidor de Preprints'
-        //       ],
-        //     },
-        //     createdAt: {
-        //       $gte: init,
-        //       $lte: end
-        //     }
-        //   },
-        //   'sourceType createdAt numberOfNetworks numberOfDocuments',
-        // )
-        .collation({ locale: 'pt' })
-        .sort({ 'content.createdAt': 1 })
-        .exec()
-    );
+        },
+      ])
+      .collation({ locale: 'pt' })
+      .sort({ 'content.createdAt': 1 })
+      .exec();
   }
 
   async processIndicator(networkDtos: NetworkDto[]) {
-    console.debug(`processIndicatorsDocumentByDataNetworkType`);
+    this.logger.log('init process evolutions indicators');
     const indicatorsMap: Map<string, EvolutionIndicatorDto> = new Map();
 
     networkDtos.map((network) => {
@@ -134,5 +107,6 @@ export class EvolutionIndicatorsService {
     });
     const indicators = Array.from(indicatorsMap.values());
     await this.createMany(indicators);
+    this.logger.log('process evolutions indicators successful!');
   }
 }

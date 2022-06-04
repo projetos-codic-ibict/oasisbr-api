@@ -8,6 +8,9 @@ import { EvolutionIndicatorsService } from '../evolution-indicators/evolution-in
 // import * as networks from '../../networks_oasisbr.json';
 import { IndicatorsService } from '../indicators/indicators.service';
 import { getUsefulNameSourceType } from '../utils/SourceTypeFormat';
+import { ParamsService } from '../params/params.service';
+import { ParamDto } from '../params/dto/param.dto';
+import { ParamName } from '../params/enums/param.enum';
 
 @Injectable()
 export class OasisbrService {
@@ -17,11 +20,22 @@ export class OasisbrService {
     private readonly networksService: NetworksService,
     private readonly evolutionIndicatorsService: EvolutionIndicatorsService,
     private readonly indicatorsService: IndicatorsService,
+    private readonly paramsService: ParamsService,
     private readonly logger: Logger,
   ) {}
 
-  // @Cron(CronExpression.EVERY_MINUTE)
-  @Cron(CronExpression.EVERY_2_HOURS)
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  resetParams() {
+    this.logger.log('reseting params');
+    this.updateEvolutionIndicatorParam('false');
+  }
+
+  private updateEvolutionIndicatorParam(value: string) {
+    const eiDto = new ParamDto(ParamName.LOAD_EVOLUTION_INDICADORS, value);
+    this.paramsService.update(ParamName.LOAD_EVOLUTION_INDICADORS, eiDto);
+  }
+
+  @Cron(CronExpression.EVERY_HOUR)
   loadOasisbrNetworks() {
     this.logger.log('Get all OasisBr networks');
     const URL = this.configService.get<string>('HARVESTER_API_URL');
@@ -71,10 +85,17 @@ export class OasisbrService {
     });
     this.updateNetworks(networkDtos);
     this.indicatorsService.processIndicatorBySourceType(networkDtos);
-    const now: Date = new Date();
-    const HOUR_UPDATE_EVOLUTIONS_INDICATORS = 5;
-    if (now.getHours() == HOUR_UPDATE_EVOLUTIONS_INDICATORS) {
+    this.updateEvolutionIndicators(networkDtos);
+  }
+
+  private async updateEvolutionIndicators(networkDtos: NetworkDto[]) {
+    const eiParam = await this.paramsService.findByName(
+      ParamName.LOAD_EVOLUTION_INDICADORS,
+    );
+    if (eiParam.value == 'false') {
       this.evolutionIndicatorsService.processIndicator(networkDtos);
+      this.logger.log('changing evolution param');
+      this.updateEvolutionIndicatorParam('true');
     }
   }
 

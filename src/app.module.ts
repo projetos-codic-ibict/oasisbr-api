@@ -8,6 +8,7 @@ import { EvolutionIndicatorsModule } from './evolution-indicators/evolution-indi
 import { OasisbrModule } from './oasisbr/oasisbr.module';
 import { ConfigModule } from '@nestjs/config';
 import { IndicatorsModule } from './indicators/indicators.module';
+import { ParamsModule } from './params/params.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { IndicatorsModule } from './indicators/indicators.module';
     EvolutionIndicatorsModule,
     IndicatorsModule,
     OasisbrModule,
+    ParamsModule,
   ],
   controllers: [AppController],
   providers: [Logger, AppService],
