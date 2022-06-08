@@ -6,3 +6,4 @@ echo "Running pm2 stop oasisbr-api"
 pm2 stop oasisbr-api
 echo "npm run deploy:prod"
 npm run deploy:prod
+echo "finished!"
