@@ -1,5 +1,5 @@
 apps:
-  - script: ./dist/main.js
+  - script: dist/main.js
     name: oasisbr-api
     watch: true
     instances: 2
