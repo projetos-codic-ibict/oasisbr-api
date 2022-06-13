@@ -46,12 +46,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/v1');
   app.enableCors({
-    origin: [
-      process.env.CORS_ORIGIN_URL != null
-        ? process.env.CORS_ORIGIN_URL
-        : 'https://oasisbr.ibict.br',
-      'https://bdtd.ibict.br',
-    ],
+    origin: process.env.CORS_ORIGIN_URL,
   });
   app.use(helmet());
 
