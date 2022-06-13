@@ -46,10 +46,14 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/v1');
   app.enableCors({
-    origin: process.env.CORS_ORIGIN_URL,
+    origin: [
+      process.env.CORS_ORIGIN_URL
+        ? process.env.CORS_ORIGIN_URL
+        : 'https://oasisbr.ibict.br',
+      'https://bdtd.ibict.br',
+    ],
   });
   app.use(helmet());
-
   const config = new DocumentBuilder()
     .setTitle('OasisBr API')
     .setDescription('The OasisBr API documentation')
