@@ -45,13 +45,9 @@ async function bootstrap() {
   });
 
   app.setGlobalPrefix('api/v1');
+  const origins: string[] = process.env.CORS_ORIGIN_URL.split(',');
   app.enableCors({
-    origin: [
-      process.env.CORS_ORIGIN_URL
-        ? process.env.CORS_ORIGIN_URL
-        : 'https://oasisbr.ibict.br',
-      'https://bdtd.ibict.br',
-    ],
+    origin: origins,
   });
   app.use(helmet());
   const config = new DocumentBuilder()
