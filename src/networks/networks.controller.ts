@@ -16,6 +16,9 @@ export class NetworksController {
   @Get('/:id')
   @ApiResponse({ status: 200, type: Network })
   async findById(@Param('id') id: number): Promise<Network> {
+    if (isNaN(id)) {
+      return new Network();
+    }
     return this.networksService.findByNetworkById(id);
   }
 }
