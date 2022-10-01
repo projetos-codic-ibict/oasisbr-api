@@ -10,6 +10,7 @@ import { ConfigModule } from '@nestjs/config';
 import { IndicatorsModule } from './indicators/indicators.module';
 import { ParamsModule } from './params/params.module';
 import { IdsModule } from './ids/ids.module';
+import { RecordsModule } from './records/records.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { IdsModule } from './ids/ids.module';
     OasisbrModule,
     ParamsModule,
     IdsModule,
+    RecordsModule,
   ],
   controllers: [AppController],
   providers: [Logger, AppService],

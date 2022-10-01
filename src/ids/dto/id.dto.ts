@@ -1,4 +1,4 @@
-export class CreateIdDto {
+export class IdDto {
   source: string;
   target: string;
   updatedAt: Date = new Date();
