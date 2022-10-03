@@ -6,13 +6,13 @@ export class RecordsController {
   constructor(private readonly recordsService: RecordsService) {}
 
   @Get()
-  findAll() {
-    return this.recordsService.findAll();
+  async getSize() {
+    const size = await this.recordsService.getSize();
+    return `Total de Records encontrados: ${size}`;
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    console.log('id: ', id);
     return this.recordsService.findOne(id);
   }
 }

@@ -10,11 +10,11 @@ export class RecordsService {
     @InjectModel(Record.name) private recordModel: Model<RecordDocument>,
   ) {}
 
-  findAll() {
-    return this.recordModel.find({}).exec();
+  getSize(): Promise<number> {
+    return this.recordModel.count({}).exec();
   }
 
-  findOne(hotId: string) {
-    return this.recordModel.findOne({ brcris_id: hotId }).exec();
+  findOne(hotId: string): Promise<Record> {
+    return this.recordModel.findOne({ hot_id: hotId }).exec();
   }
 }

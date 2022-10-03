@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 
 export type RecordDocument = Record & Document;
 
-@Schema()
+@Schema({ collection: 'records_test' })
 export class Record {
   @ApiProperty()
   @Prop({ unique: true, required: true })
