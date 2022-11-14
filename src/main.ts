@@ -32,7 +32,7 @@ const consoleTransport = new winston.transports.Console({
 });
 
 const transports: winston.transport[] = [consoleTransport];
-console.log(`#${process.env.DATABASE_PASSWORD}#`);
+
 if (process.env.NODE_ENV === 'production') {
   transports.push(fileTransport);
 }

@@ -1,0 +1,28 @@
+name: Deploy Oaisbr-API Test
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: self-hosted
+    environment:
+      name: test
+      url: 'http://172.16.16.112:3000/api/v1'
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          sh scripts/deploy.sh
+  prod:
+    runs-on: self-hosted
+    environment:
+      name: prod
+      url: 'https://api-oasisbr.ibict.br/api/v1/'
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          sh scripts/deploy.sh
