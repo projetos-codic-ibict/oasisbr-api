@@ -47,6 +47,10 @@ export class NetworksService {
     return this.networkModel.findOne({ id: id }).exec();
   }
 
+  findByNetworkByName(name: string): Network | PromiseLike<Network> {
+    return this.networkModel.findOne({ name: name }).exec();
+  }
+
   async update(id: number, networkDto: NetworkDto) {
     await this.networkModel.updateOne({ id: id }, networkDto, { upsert: true });
   }
