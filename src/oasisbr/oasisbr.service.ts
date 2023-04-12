@@ -24,7 +24,7 @@ export class OasisbrService {
     private readonly logger: Logger,
   ) {}
 
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  @Cron(CronExpression.EVERY_HOUR)
   resetParams() {
     this.logger.log('reseting params');
     this.updateEvolutionIndicatorParam('false');
