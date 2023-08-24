@@ -9,4 +9,5 @@ export class NetworkDto {
   email: string;
   validSize: number;
   updatedAt: Date = new Date();
+  uf: string;
 }

@@ -1,16 +1,16 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { EvolutionIndicatorsService } from '../evolution-indicators/evolution-indicators.service';
 import { NetworkDto } from '../networks/dto/network.dto';
 import { NetworksService } from '../networks/networks.service';
-import { ConfigService } from '@nestjs/config';
-import { EvolutionIndicatorsService } from '../evolution-indicators/evolution-indicators.service';
 // import * as networks from '../../networks_oasisbr.json';
 import { IndicatorsService } from '../indicators/indicators.service';
-import { getUsefulNameSourceType } from '../utils/SourceTypeFormat';
-import { ParamsService } from '../params/params.service';
 import { ParamDto } from '../params/dto/param.dto';
 import { ParamName } from '../params/enums/param.enum';
+import { ParamsService } from '../params/params.service';
+import { getUsefulNameSourceType } from '../utils/SourceTypeFormat';
 
 @Injectable()
 export class OasisbrService {
@@ -24,7 +24,7 @@ export class OasisbrService {
     private readonly logger: Logger,
   ) {}
 
-  @Cron(CronExpression.EVERY_HOUR)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   resetParams() {
     this.logger.log('reseting params');
     this.updateEvolutionIndicatorParam('false');
@@ -55,7 +55,8 @@ export class OasisbrService {
             const networks = res.data;
             this.processNetworks(networks);
           },
-          error: (e) => this.logger.error('Get all OasisBr networks error:', e),
+          error: (e) =>
+            this.logger.error('Get all OasisBr networks error:', e.message),
           complete: () => this.logger.log('Get all OasisBr networks finished'),
         });
     } catch (error) {
@@ -80,6 +81,7 @@ export class OasisbrService {
         );
         networkDto.issn = network.attributes.issn;
         networkDto.email = network.attributes.contact_email;
+        networkDto.uf = network.attributes.state;
       }
       networkDtos.push(networkDto);
     });

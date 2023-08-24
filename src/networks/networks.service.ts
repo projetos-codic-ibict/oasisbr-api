@@ -36,6 +36,7 @@ export class NetworksService {
           issn: 1,
           email: 1,
           sourceUrl: 1,
+          uf: 1,
         },
       )
       .collation({ locale: 'pt' })

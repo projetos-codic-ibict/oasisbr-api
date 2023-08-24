@@ -43,6 +43,10 @@ export class Network {
   @ApiProperty()
   @Prop({ default: Date.now, required: true })
   updatedAt: Date;
+
+  @ApiProperty()
+  @Prop()
+  uf: string;
 }
 
 export const NetworkSchema = SchemaFactory.createForClass(Network);
