@@ -1,10 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as helmet from 'helmet';
-import * as winston from 'winston';
-import 'winston-daily-rotate-file';
+// import * as winston from 'winston';
+// import 'winston-daily-rotate-file';
 import { AppModule } from './app.module';
-const { timestamp, printf } = winston.format;
+// const { timestamp, printf } = winston.format;
 
 // const oasisbrFormat = printf(({ level, message, timestamp }) => {
 //   return `${timestamp} ${level}: ${message}`;
