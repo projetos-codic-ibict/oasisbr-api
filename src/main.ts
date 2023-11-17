@@ -1,47 +1,46 @@
 import { NestFactory } from '@nestjs/core';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { AppModule } from './app.module';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as helmet from 'helmet';
-import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import 'winston-daily-rotate-file';
+import { AppModule } from './app.module';
 const { timestamp, printf } = winston.format;
 
-const oasisbrFormat = printf(({ level, message, timestamp }) => {
-  return `${timestamp} ${level}: ${message}`;
-});
+// const oasisbrFormat = printf(({ level, message, timestamp }) => {
+//   return `${timestamp} ${level}: ${message}`;
+// });
 
-const fileTransport = new winston.transports.DailyRotateFile({
-  filename: 'oasisbr-%DATE%.log',
-  datePattern: 'YYYY-MM-DD',
-  zippedArchive: true,
-  dirname: './logs',
-  maxSize: '20m',
-  maxFiles: '10d',
-  level: 'debug',
-  format: winston.format.combine(timestamp(), oasisbrFormat),
-});
+// const fileTransport = new winston.transports.DailyRotateFile({
+//   filename: 'oasisbr-%DATE%.log',
+//   datePattern: 'YYYY-MM-DD',
+//   zippedArchive: true,
+//   dirname: './logs',
+//   maxSize: '20m',
+//   maxFiles: '10d',
+//   level: 'debug',
+//   format: winston.format.combine(timestamp(), oasisbrFormat),
+// });
 
-const consoleTransport = new winston.transports.Console({
-  level: 'debug',
-  format: winston.format.combine(
-    winston.format.colorize({ all: true }),
-    timestamp(),
-    oasisbrFormat,
-  ),
-});
+// const consoleTransport = new winston.transports.Console({
+//   level: 'debug',
+//   format: winston.format.combine(
+//     winston.format.colorize({ all: true }),
+//     timestamp(),
+//     oasisbrFormat,
+//   ),
+// });
 
-const transports: winston.transport[] = [consoleTransport];
+// const transports: winston.transport[] = [consoleTransport];
 
-if (process.env.NODE_ENV === 'production') {
-  transports.push(fileTransport);
-}
+// if (process.env.NODE_ENV === 'production') {
+//   transports.push(fileTransport);
+// }
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: WinstonModule.createLogger({
-      transports: transports,
-    }),
+    // logger: WinstonModule.createLogger({
+    //   transports: transports,
+    // }),
   });
 
   app.setGlobalPrefix('api/v1');
