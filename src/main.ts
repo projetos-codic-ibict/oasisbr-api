@@ -3,6 +3,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as helmet from 'helmet';
 // import * as winston from 'winston';
 // import 'winston-daily-rotate-file';
+import { RequestMethod } from '@nestjs/common';
 import { AppModule } from './app.module';
 // const { timestamp, printf } = winston.format;
 
@@ -43,7 +44,9 @@ async function bootstrap() {
     // }),
   });
 
-  app.setGlobalPrefix('api/v1');
+  app.setGlobalPrefix('api/v1', {
+    exclude: [{ path: '/', method: RequestMethod.GET }],
+  });
   const origins: string[] = process.env.CORS_ORIGIN_URL.split(',');
   app.enableCors({
     origin: origins,
