@@ -17,6 +17,7 @@ import { RecordsModule } from './records/records.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      ignoreEnvFile: true,
     }),
     MongooseModule.forRoot(
       `mongodb://${process.env.DATABASE_HOST}:${process.env.DATABASE_PORT}`,
