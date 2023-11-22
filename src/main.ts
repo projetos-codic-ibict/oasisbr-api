@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as helmet from 'helmet';
@@ -36,6 +37,7 @@ import { AppModule } from './app.module';
 // if (process.env.NODE_ENV === 'production') {
 //   transports.push(fileTransport);
 // }
+import { ConfigService } from '@nestjs/config';
 
 console.log('process.env.NODE_ENV', process.env.NODE_ENV);
 console.log('process.env.DATABASE_NAME', process.env.DATABASE_NAME);
@@ -51,6 +53,11 @@ async function bootstrap() {
     //   transports: transports,
     // }),
   });
+
+  const configService = app.get(ConfigService);
+  //@ts-ignore
+  const DATABASE_USER = configService.get<string>('DATABASE_USER');
+  console.log('DATABASE_USER', DATABASE_USER);
 
   app.setGlobalPrefix('api/v1', {
     exclude: [{ path: '/', method: RequestMethod.GET }],
