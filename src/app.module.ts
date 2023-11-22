@@ -17,7 +17,6 @@ import { RecordsModule } from './records/records.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.local', '.env'],
     }),
     MongooseModule.forRoot(
       `mongodb://${process.env.DATABASE_HOST}:${process.env.DATABASE_PORT}`,
@@ -30,10 +29,10 @@ import { RecordsModule } from './records/records.module';
         pass: process.env.DATABASE_PASSWORD,
         connectionFactory: (connection) => {
           connection.on('connected', () => {
-            console.log('DB is connected');
+            console.log('DB is connected', process.env.DATABASE_USER);
           });
           connection.on('disconnected', () => {
-            console.log('DB disconnected');
+            console.log('DB disconnected', process.env.DATABASE_USER);
           });
           connection.on('error', (error) => {
             console.log('DB connection failed! for error: ', error);
