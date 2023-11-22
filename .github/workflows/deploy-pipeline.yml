@@ -7,10 +7,10 @@ on:
 
 jobs:
   test:
-    runs-on:  [self-hosted, Linux, x64, runner-persea]
+    runs-on: [self-hosted, Linux, x64, runner-persea]
     environment:
       name: test
-      url: 'http://172.16.16.112:3000/api/v1'
+      url: 'http://172.16.16.112:3000/'
 
     steps:
       - uses: actions/checkout@v3
@@ -20,7 +20,7 @@ jobs:
     runs-on: [self-hosted, Linux, x64, runner-peroba]
     environment:
       name: prod
-      url: 'https://api-oasisbr.ibict.br/api/v1/'
+      url: 'https://api-oasisbr.ibict.br/'
 
     steps:
       - uses: actions/checkout@v3
