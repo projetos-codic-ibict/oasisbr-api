@@ -37,6 +37,10 @@ import { AppModule } from './app.module';
 //   transports.push(fileTransport);
 // }
 
+console.log('process.env.NODE_ENV', process.env.NODE_ENV);
+console.log('process.env.DATABASE_NAME', process.env.DATABASE_NAME);
+console.log('process.env.DATABASE_USER', process.env.DATABASE_USER);
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     // logger: WinstonModule.createLogger({
