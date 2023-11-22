@@ -22,6 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
+          echo $DATABASE_USER >> secrets.txt
           sh scripts/deploy.sh
   prod:
     runs-on: [self-hosted, Linux, x64, runner-peroba]
