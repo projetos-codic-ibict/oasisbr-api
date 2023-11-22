@@ -15,12 +15,6 @@ env:
 jobs:
   test:
     runs-on: [self-hosted, Linux, x64, runner-persea]
-    env:
-      DATABASE_USER: ${{secrets.DATABASE_USER}}
-      DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
-      SOLR_URL: ${{secrets.SOLR_URL}}
-      HARVESTER_API_USERNAME: ${{secrets.HARVESTER_API_USERNAME}}
-      HARVESTER_API_PASS: ${{secrets.HARVESTER_API_PASS}}
     environment:
       name: test
       url: 'http://172.16.16.112:3000/'
