@@ -5,7 +5,7 @@ npm install
 echo "Running pm2 stop oasisbr-api"
 pm2 stop oasisbr-api
 echo "Copy local configs"
-cp .env  .env.local
+cp .env.example  .env
 echo "npm run deploy:prod"
 npm run deploy:prod
 echo "finished!"
