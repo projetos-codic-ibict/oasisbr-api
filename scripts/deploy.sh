@@ -2,11 +2,11 @@
 set -e
 
 echo "Running npm install"
-npm install
+yarn
 echo "Running pm2 stop oasisbr-api"
 pm2 stop oasisbr-api
 echo "Copy local configs"
 cp .env.example  .env
 echo "npm run deploy"
-npm run deploy
+yarn deploy
 echo "finished!"
