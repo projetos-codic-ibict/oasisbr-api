@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
-echo "Running npm install"
+echo "Running yarn install"
 yarn
-echo "Running pm2 stop oasisbr-api"
-pm2 stop oasisbr-api
-echo "Copy local configs"
+echo "Running pm2 stop all"
+pm2 stop all
+echo "copy env configs"
 cp .env.example  .env
-echo "npm run deploy"
+echo "yarn deploy"
 yarn deploy
 echo "finished!"
