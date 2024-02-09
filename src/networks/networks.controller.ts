@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 import { NetworksService } from './networks.service';
 import { Network } from './schemas/network.schema';
@@ -10,18 +10,13 @@ export class NetworksController {
 
   @Get()
   @ApiResponse({ status: 200, type: Network, isArray: true })
-  async findAll(): Promise<Network[]> {
+  async findAll(@Query('sourceType') sourceType, @Query('name') name): Promise<Network[]> {
+    console.log('sourceType', sourceType);
+    if (sourceType) {
+      return this.networksService.findByNetworkBySourceType(sourceType);
+    }
     return this.networksService.findAll();
   }
-
-  // @Get('/:id')
-  // @ApiResponse({ status: 200, type: Network })
-  // async findById(@Param('id') id: number): Promise<Network> {
-  //   if (isNaN(id)) {
-  //     return new Network();
-  //   }
-  //   return this.networksService.findByNetworkById(id);
-  // }
 
   @Get('/:name')
   @ApiResponse({ status: 200, type: Network })

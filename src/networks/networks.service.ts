@@ -44,6 +44,10 @@ export class NetworksService {
       .exec();
   }
 
+  findByNetworkBySourceType(sourceType: string): Promise<Network[]> {
+    return this.networkModel.find({ sourceType: sourceType }).exec();
+  }
+
   findByNetworkById(id: number): Network | PromiseLike<Network> {
     return this.networkModel.findOne({ id: id }).exec();
   }
