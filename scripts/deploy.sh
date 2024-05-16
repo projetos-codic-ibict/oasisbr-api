@@ -2,6 +2,8 @@
 set -e
 echo "Versão do Node"
 node -v
+echo "Versão do PM2"
+pm2 -v
 echo "Running npm install"
 npm install
 echo "Running pm2 stop all"

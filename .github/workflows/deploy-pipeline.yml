@@ -21,7 +21,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: npm run deploy
+      - run: |
+          sh scripts/deploy.sh
   prod:
     runs-on: [self-hosted, Linux, x64, runner-peroba]
     environment:
@@ -30,4 +31,5 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: npm run deploy
+      - run: |
+          sh scripts/deploy.sh
