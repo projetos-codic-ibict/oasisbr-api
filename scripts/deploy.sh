@@ -6,7 +6,7 @@ echo "Running yarn install"
 yarn
 echo "Running pm2 stop all"
 pm2 stop all || true
-echo "copy env configs"
+echo "copy .env.example  para .env"
 cp .env.example  .env
 echo "yarn deploy"
 yarn deploy
