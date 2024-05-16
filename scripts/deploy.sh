@@ -2,6 +2,7 @@
 set -e
 echo "Versão do Node"
 node -v
+npm install pm2 -g
 echo "Versão do PM2"
 pm2 -v
 echo "Running npm install"
