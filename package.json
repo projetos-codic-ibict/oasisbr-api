@@ -10,7 +10,7 @@
     "start": "nest start",
     "dev": "nest start --watch",
     "build": "nest build",
-    "deploy": "npm i && npm run build && pm2 start npm --name 'oasisbr-api' --interpreter bash -- start",
+    "deploy": "npm i && npm run build && npm start --interpreter bash -- start",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
