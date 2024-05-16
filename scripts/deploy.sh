@@ -6,7 +6,7 @@ echo "Running npm install"
 npm install
 echo "Running pm2 stop all"
 pm2 stop all || true
-echo "copy env configs"
+echo "copy .env.example para .env"
 cp .env.example  .env
 echo "npm run deploy"
 npm run deploy
