@@ -1,14 +1,11 @@
 import { Logger, Module } from '@nestjs/common';
-import { NetworksService } from './networks.service';
 import { NetworksController } from './networks.controller';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Network, NetworkSchema } from './schemas/network.schema';
+import { NetworksService } from './networks.service';
+import { PrismaService } from 'src/prisma.service';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: Network.name, schema: NetworkSchema }]),
-  ],
+  imports: [],
   controllers: [NetworksController],
-  providers: [NetworksService, Logger],
+  providers: [NetworksService, PrismaService, Logger],
 })
 export class NetworksModule {}

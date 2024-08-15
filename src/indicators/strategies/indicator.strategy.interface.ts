@@ -1,5 +1,5 @@
-import { NetworkDto } from '../../networks/dto/network.dto';
+import { Network } from '@prisma/client';
 
 export interface IndicatorStrategy {
-  processIndicator(networkDtos: Array<NetworkDto>);
+  processIndicator(networks: Array<Network>);
 }

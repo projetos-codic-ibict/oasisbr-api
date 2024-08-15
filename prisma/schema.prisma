@@ -16,7 +16,7 @@ datasource db {
 model EvolutionIndicator {
   id                Int      @id @default(autoincrement())
   sourceType        String
-  createdAt         DateTime @default(now())
+  createdAt         DateTime @default(now()) @db.Timestamptz(3)
   numberOfNetworks  Int
   numberOfDocuments Int
 
@@ -27,7 +27,7 @@ model Id {
   id        Int      @id @default(autoincrement())
   source    String
   target    String
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @db.Timestamptz(3)
 
   @@map("ids")
 }
@@ -37,7 +37,7 @@ model Indicator {
   name      String   @unique
   type      String
   value     Int
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @db.Timestamptz(3)
 
   @@map("indicators")
 }
@@ -45,36 +45,36 @@ model Indicator {
 model Network {
   id          Int      @id
   acronym     String
-  issn        String
+  issn        String?
   name        String
   institution String
   sourceType  String
-  email       String
-  sourceUrl   String
+  email       String?
+  sourceUrl   String?
   validSize   Int
   uf          String
-  updatedAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @db.Timestamptz(3)
 
   @@map("networks")
 }
 
 model Param {
   id        Int      @id @default(autoincrement())
-  name      String
+  name      String   @unique
   value     String
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @db.Timestamptz(3)
 
   @@map("params")
 }
 
 model Record {
   brcris_id  String   @id
-  hot_id     String
+  hot_id     String   @unique
   missed     Boolean
-  created_at DateTime @default(now())
+  created_at DateTime @default(now()) @db.Timestamptz(3)
   record     String
   source_ids String
-  updated_at DateTime @default(now())
+  updated_at DateTime @default(now()) @db.Timestamptz(3)
 
   @@map("records")
 }

@@ -1,8 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { IndicatorsService } from './indicators.service';
-import { IndicatorType } from './enums/indicator-type.enum';
 import { ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { Indicator } from './schemas/indicator.schema';
+import { IndicatorType } from './enums/indicator-type.enum';
+import { IndicatorsService } from './indicators.service';
 
 @Controller('indicators')
 export class IndicatorsController {
@@ -10,7 +9,7 @@ export class IndicatorsController {
 
   @Get()
   @ApiQuery({ name: 'type', enum: IndicatorType, required: false })
-  @ApiResponse({ status: 200, type: Indicator, isArray: true })
+  @ApiResponse({ status: 200, type: '', isArray: true })
   find(@Query('type') type: IndicatorType) {
     if (type === IndicatorType.SOURCE_TYPE) {
       return this.indicatorsService.findByType(type);

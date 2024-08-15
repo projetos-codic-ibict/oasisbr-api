@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Injectable, Logger } from '@nestjs/common';
 import { EvolutionIndicator, Network, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
-import { EvolutionIndicatorDto } from './dto/evolution-indicator.dto';
 
 @Injectable()
 export class EvolutionIndicatorsService {
@@ -22,7 +22,7 @@ export class EvolutionIndicatorsService {
     });
   }
 
-  async findByDates(init: Date, end: Date): Promise<EvolutionIndicator[]> {
+  async findByDates(init: Date, end: Date) {
     if (!init && !end) {
       const todayMinusOneYear = new Date();
       todayMinusOneYear.setFullYear(todayMinusOneYear.getFullYear() - 1);
@@ -32,67 +32,31 @@ export class EvolutionIndicatorsService {
       init = new Date(init);
       end = new Date(end);
     }
+
+    console.log('init', init.toLocaleString('pt-BR'));
+    console.log('end', end.toLocaleString('pt-BR'));
+
     /* foi adicionado o aggregate para filtrar 
     somente os indicadores do último dia de cada mês. 
     Isso porque o serviço que insere os indicadores 
     está rodando diariamente */
-    // Consulta adaptada para Prisma
-    const results = await this.prisma.evolutionIndicator.groupBy({
-      by: ['id', 'sourceType'],
-      where: {
-        createdAt: {
-          gte: init,
-          lte: end,
-        },
-        sourceType: {
-          in: [
-            'Revista Científica',
-            'Biblioteca Digital de Teses e Dissertações',
-            'Repositório de Dados de Pesquisa',
-            'Repositório de Publicações',
-            'Portal Agregador',
-            'Biblioteca Digital de Monografia',
-            'Servidor de Preprints',
-          ],
-        },
-      },
-      _min: {
-        createdAt: true,
-      },
-      _max: {
-        createdAt: true,
-      },
-      _first: {
-        numberOfNetworks: true,
-        numberOfDocuments: true,
-        createdAt: true,
-        sourceType: true,
-      },
-      orderBy: {
-        createdAt: 'desc', // Ordem decrescente para pegar o último de cada mês
-      },
-    });
-
-    // Mapeando e transformando os resultados para incluir mês e ano
-    const groupedResults = results.map((item) => ({
-      id: item.id,
-      sourceType: item.sourceType,
-      month: item.createdAt.getMonth() + 1, // Para obter o mês
-      year: item.createdAt.getFullYear(), // Para obter o ano
-      content: {
-        createdAt: item.createdAt,
-        numberOfNetworks: item.numberOfNetworks,
-        numberOfDocuments: item.numberOfDocuments,
-        sourceType: item.sourceType,
-      },
-    }));
-
-    return groupedResults;
+    const ultimosIndicadoresPorMes = await this.prisma.$queryRaw`
+    SELECT *
+    FROM "evolution_indicators" i
+    WHERE "createdAt" = (
+      SELECT MAX("createdAt")
+      FROM "evolution_indicators"
+      WHERE date_trunc('month', i."createdAt") = date_trunc('month', "createdAt")
+      AND "createdAt" >= to_timestamp(${init.toLocaleString('pt-BR')}, 'DD/MM/YYYY, HH24:MI:SS')
+      AND "createdAt" <= to_timestamp(${end.toLocaleString('pt-BR')}, 'DD/MM/YYYY, HH24:MI:SS')
+    )
+  `;
+    return ultimosIndicadoresPorMes;
   }
 
   async processIndicator(networks: Network[]) {
     this.logger.log('init process evolutions indicators');
-    const indicatorsMap: Map<string, EvolutionIndicatorDto> = new Map();
+    const indicatorsMap: Map<string, Prisma.EvolutionIndicatorCreateInput> = new Map();
 
     networks.map((network) => {
       if (!network.sourceType) {
@@ -102,7 +66,12 @@ export class EvolutionIndicatorsService {
         indicatorsMap.get(network.sourceType).numberOfNetworks += 1;
         indicatorsMap.get(network.sourceType).numberOfDocuments += network.validSize;
       } else {
-        indicatorsMap.set(network.sourceType, new EvolutionIndicatorDto(network.sourceType, 1, network.validSize));
+        const evolutionIndicador: Prisma.EvolutionIndicatorCreateInput = {
+          sourceType: network.sourceType,
+          numberOfNetworks: 1,
+          numberOfDocuments: network.validSize,
+        };
+        indicatorsMap.set(network.sourceType, evolutionIndicador);
       }
     });
     const indicators = Array.from(indicatorsMap.values());

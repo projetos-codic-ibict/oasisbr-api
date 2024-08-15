@@ -50,7 +50,7 @@ export class IndicatorsService {
   processIndicatorBySourceType(networks: Network[]) {
     try {
       console.log(`processIndicatorsDocumentByType`);
-      const indicatorsDtoMap: Map<string, Indicator> = new Map();
+      const indicatorsDtoMap: Map<string, Prisma.IndicatorCreateInput> = new Map();
 
       networks.map((network) => {
         network.sourceType = getUsefulNameSourceType(network.sourceType);
@@ -60,7 +60,12 @@ export class IndicatorsService {
         if (indicatorsDtoMap.get(network.sourceType)) {
           indicatorsDtoMap.get(network.sourceType).value += 1;
         } else {
-          indicatorsDtoMap.set(network.sourceType, new IndicatorDto(network.sourceType, 1, IndicatorType.SOURCE_TYPE));
+          const indicatorCreateInput = {
+            name: network.sourceType,
+            value: 1,
+            type: IndicatorType.SOURCE_TYPE,
+          };
+          indicatorsDtoMap.set(network.sourceType, indicatorCreateInput);
         }
       });
       const indicatorsDto = Array.from(indicatorsDtoMap.values());

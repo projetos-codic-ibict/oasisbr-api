@@ -1,39 +1,37 @@
-import { NetworkDto } from '../../networks/dto/network.dto';
-import { IndicatorDto } from '../dto/indicator.dto';
+import { Network, Prisma } from '@prisma/client';
 import { IndicatorType } from '../enums/indicator-type.enum';
 import { IndicatorsService } from '../indicators.service';
 import { IndicatorStrategy } from './indicator.strategy.interface';
 
 export class IndicatorBySourceType implements IndicatorStrategy {
   constructor(private readonly indicatorsService: IndicatorsService) {}
-  processIndicator(networksDtos: NetworkDto[]) {
+  processIndicator(networks: Network[]) {
     console.debug(`processIndicatorsDocumentByType`);
-    const indicatorsMap: Map<string, IndicatorDto> = new Map();
+    const indicatorsMap: Map<string, Prisma.IndicatorCreateInput> = new Map();
 
-    networksDtos.map((network) => {
+    networks.map((network) => {
       if (!network.sourceType) {
         network.sourceType = 'Indefinido';
       }
       if (indicatorsMap.get(network.sourceType)) {
-        indicatorsMap.get(network.sourceType).value =
-          indicatorsMap.get(network.sourceType).value + 1;
+        indicatorsMap.get(network.sourceType).value = indicatorsMap.get(network.sourceType).value + 1;
       } else {
-        indicatorsMap.set(
-          network.sourceType,
-          new IndicatorDto(network.sourceType, 1, IndicatorType.SOURCE_TYPE),
-        );
+        const indicatorCreateInput: Prisma.IndicatorCreateInput = {
+          name: network.sourceType,
+          value: 1,
+          type: IndicatorType.SOURCE_TYPE,
+        };
+        indicatorsMap.set(network.sourceType, indicatorCreateInput);
       }
     });
     const indicators = Array.from(indicatorsMap.values());
     this.updateIndicatorsDocumentByType(indicators);
   }
 
-  private async updateIndicatorsDocumentByType(
-    indicatorDtos: Array<IndicatorDto>,
-  ) {
+  private async updateIndicatorsDocumentByType(indicatorsCreateInput: Array<Prisma.IndicatorCreateInput>) {
     console.debug(`init updateIndicatorsDocumentByType`);
-    indicatorDtos.forEach(async (indicatorDto) => {
-      await this.indicatorsService.update(indicatorDto.name, indicatorDto);
+    indicatorsCreateInput.forEach(async (indicatorCreateInput) => {
+      await this.indicatorsService.update(indicatorCreateInput.name, indicatorCreateInput);
     });
     console.debug(`finish updateIndicatorsDocumentByType`);
   }

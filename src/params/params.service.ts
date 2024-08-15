@@ -1,25 +1,38 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { ParamDto } from './dto/param.dto';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from 'src/prisma.service';
 import { ParamName } from './enums/param.enum';
-import { Param, ParamDocument } from './schemas/param.schema';
 
 @Injectable()
 export class ParamsService {
-  constructor(@InjectModel(Param.name) private paramModel: Model<ParamDocument>) {}
+  constructor(private prisma: PrismaService) {}
 
   findAll() {
-    return this.paramModel.find({}, 'name value').exec();
+    return this.prisma.param.findMany({});
   }
 
   findByName(name: ParamName) {
-    return this.paramModel.findOne({ name: name }, { _id: 0, name: 1, value: 1 }).exec();
+    return this.prisma.param.findFirst({
+      where: {
+        name,
+      },
+    });
   }
 
-  async update(name: ParamName, paramDto: ParamDto) {
-    await this.paramModel.updateOne({ name: name }, paramDto, {
-      upsert: true,
-    });
+  async update(name: ParamName, param: Prisma.ParamCreateInput) {
+    try {
+      console.log(`>>> ${name} && ${param}`);
+      if (name && param) {
+        await this.prisma.param.upsert({
+          where: {
+            name,
+          },
+          update: { ...param },
+          create: { ...param },
+        });
+      }
+    } catch (error) {
+      console.error(`Error: ${error}`);
+    }
   }
 }
