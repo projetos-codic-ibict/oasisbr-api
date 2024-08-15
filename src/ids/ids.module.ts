@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
-import { IdsService } from './ids.service';
 import { IdsController } from './ids.controller';
-import { Id, IdSchema } from './schemas/ids.schema';
-import { MongooseModule } from '@nestjs/mongoose';
+import { IdsService } from './ids.service';
+import { PrismaService } from 'src/prisma.service';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Id.name, schema: IdSchema }])],
+  imports: [],
   controllers: [IdsController],
-  providers: [IdsService],
+  providers: [IdsService, PrismaService],
 })
 export class IdsModule {}

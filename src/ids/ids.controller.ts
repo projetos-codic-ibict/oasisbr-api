@@ -5,11 +5,6 @@ import { IdsService } from './ids.service';
 export class IdsController {
   constructor(private readonly idsService: IdsService) {}
 
-  // @Post()
-  // create(@Body() createIdDto: CreateIdDto) {
-  //   return this.idsService.create(createIdDto);
-  // }
-
   @Get()
   findAll() {
     return this.idsService.findAll();

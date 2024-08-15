@@ -1,14 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ParamsService } from './params.service';
 import { ParamsController } from './params.controller';
-import { Param, ParamSchema } from './schemas/param.schema';
-import { MongooseModule } from '@nestjs/mongoose';
+import { ParamsService } from './params.service';
+import { PrismaService } from 'src/prisma.service';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: Param.name, schema: ParamSchema }]),
-  ],
+  imports: [],
   controllers: [ParamsController],
-  providers: [ParamsService],
+  providers: [ParamsService, PrismaService],
 })
 export class ParamsModule {}

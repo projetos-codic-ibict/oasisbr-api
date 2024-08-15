@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model EvolutionIndicator {
+  id                Int      @id @default(autoincrement())
+  sourceType        String
+  createdAt         DateTime @default(now()) @db.Timestamptz(3)
+  numberOfNetworks  Int
+  numberOfDocuments Int
+
+  @@map("evolution_indicators")
+}
+
+model Id {
+  id        Int      @id @default(autoincrement())
+  source    String
+  target    String
+  updatedAt DateTime @default(now()) @db.Timestamptz(3)
+
+  @@map("ids")
+}
+
+model Indicator {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  type      String
+  value     Int
+  updatedAt DateTime @default(now()) @db.Timestamptz(3)
+
+  @@map("indicators")
+}
+
+model Network {
+  id          Int      @id
+  acronym     String
+  issn        String?
+  name        String
+  institution String
+  sourceType  String
+  email       String?
+  sourceUrl   String?
+  validSize   Int
+  uf          String
+  updatedAt   DateTime @default(now()) @db.Timestamptz(3)
+
+  @@map("networks")
+}
+
+model Param {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  value     String
+  updatedAt DateTime @default(now()) @db.Timestamptz(3)
+
+  @@map("params")
+}
+
+model Record {
+  brcris_id  String   @id
+  hot_id     String   @unique
+  missed     Boolean
+  created_at DateTime @default(now()) @db.Timestamptz(3)
+  record     String
+  source_ids String
+  updated_at DateTime @default(now()) @db.Timestamptz(3)
+
+  @@map("records")
+}

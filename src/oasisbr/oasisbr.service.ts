@@ -1,13 +1,12 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { Network, Prisma } from '@prisma/client';
 import { EvolutionIndicatorsService } from '../evolution-indicators/evolution-indicators.service';
-import { NetworkDto } from '../networks/dto/network.dto';
-import { NetworksService } from '../networks/networks.service';
-// import * as networks from '../../networks_oasisbr.json';
 import { IndicatorsService } from '../indicators/indicators.service';
-import { ParamDto } from '../params/dto/param.dto';
+import { NetworksService } from '../networks/networks.service';
 import { ParamName } from '../params/enums/param.enum';
 import { ParamsService } from '../params/params.service';
 import { getUsefulNameSourceType } from '../utils/SourceTypeFormat';
@@ -24,18 +23,18 @@ export class OasisbrService {
     private readonly logger: Logger,
   ) {}
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_MINUTE)
   resetParams() {
     this.logger.log('reseting params');
     this.updateEvolutionIndicatorParam('false');
   }
 
   private updateEvolutionIndicatorParam(value: string) {
-    const eiDto = new ParamDto(ParamName.LOAD_EVOLUTION_INDICADORS, value);
+    const eiDto: Prisma.ParamCreateInput = { name: ParamName.LOAD_EVOLUTION_INDICADORS, value: value };
     this.paramsService.update(ParamName.LOAD_EVOLUTION_INDICADORS, eiDto);
   }
 
-  @Cron(CronExpression.EVERY_HOUR)
+  @Cron(CronExpression.EVERY_MINUTE)
   loadOasisbrNetworks() {
     this.logger.log('Get all OasisBr networks');
     const URL = this.configService.get<string>('HARVESTER_API_URL');
@@ -55,8 +54,7 @@ export class OasisbrService {
             const networks = res.data;
             this.processNetworks(networks);
           },
-          error: (e) =>
-            this.logger.error('Get all OasisBr networks error:', e.message),
+          error: (e) => this.logger.error('Get all OasisBr networks error:', e.message),
           complete: () => this.logger.log('Get all OasisBr networks finished'),
         });
     } catch (error) {
@@ -64,46 +62,43 @@ export class OasisbrService {
     }
   }
 
-  processNetworks(networks: any[]) {
-    this.logger.debug(`qtd networks to process: ${networks.length}`);
-    const networkDtos: Array<NetworkDto> = [];
-    networks.forEach((network) => {
-      const networkDto = new NetworkDto();
-      networkDto.id = network.networkID;
-      networkDto.acronym = network.acronym;
-      networkDto.name = network.name;
-      networkDto.institution = network.institution;
-      networkDto.validSize = network.validSize;
-      if (network.attributes) {
-        networkDto.sourceUrl = network.attributes.source_url;
-        networkDto.sourceType = getUsefulNameSourceType(
-          network.attributes.source_type,
-        );
-        networkDto.issn = network.attributes.issn;
-        networkDto.email = network.attributes.contact_email;
-        networkDto.uf = network.attributes.state;
+  processNetworks(allNetworks: any[]) {
+    this.logger.debug(`qtd networks to process: ${allNetworks.length}`);
+    const networks: Array<Network> = [];
+    allNetworks.forEach((item) => {
+      //@ts-ignore
+      const network: Network = {};
+      network.id = item.networkID;
+      network.acronym = item.acronym;
+      network.name = item.name;
+      network.institution = item.institution;
+      network.validSize = item.validSize;
+      if (item.attributes) {
+        network.sourceUrl = item.attributes.source_url;
+        network.sourceType = getUsefulNameSourceType(item.attributes.source_type);
+        network.issn = item.attributes.issn;
+        network.email = item.attributes.contact_email;
+        network.uf = item.attributes.state;
       }
-      networkDtos.push(networkDto);
+      networks.push(network);
     });
-    this.updateNetworks(networkDtos);
-    this.indicatorsService.processIndicatorBySourceType(networkDtos);
-    this.updateEvolutionIndicators(networkDtos);
+    this.updateNetworks(networks);
+    this.indicatorsService.processIndicatorBySourceType(networks);
+    this.updateEvolutionIndicators(networks);
   }
 
-  private async updateEvolutionIndicators(networkDtos: NetworkDto[]) {
-    const eiParam = await this.paramsService.findByName(
-      ParamName.LOAD_EVOLUTION_INDICADORS,
-    );
+  private async updateEvolutionIndicators(networksCreateInput: Network[]) {
+    const eiParam = await this.paramsService.findByName(ParamName.LOAD_EVOLUTION_INDICADORS);
     if (eiParam.value == 'false') {
-      this.evolutionIndicatorsService.processIndicator(networkDtos);
+      this.evolutionIndicatorsService.processIndicator(networksCreateInput);
       this.logger.log('changing evolution param');
       this.updateEvolutionIndicatorParam('true');
     }
   }
 
-  private async updateNetworks(networkDtos: Array<NetworkDto>) {
-    this.logger.log(`init updateNetworks, qtd: ${networkDtos.length}`);
-    await this.networksService.removeAllAndInsertAll(networkDtos);
+  private async updateNetworks(networksCreateInput: Array<Network>) {
+    this.logger.log(`init updateNetworks, qtd: ${networksCreateInput.length}`);
+    await this.networksService.removeAllAndInsertAll(networksCreateInput);
     this.logger.log(`finish updateNetworks`);
   }
 }

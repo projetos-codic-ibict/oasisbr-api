@@ -1,0 +1,18 @@
+-- AlterTable
+ALTER TABLE "evolution_indicators" ALTER COLUMN "createdAt" SET DATA TYPE TIMESTAMPTZ(3);
+
+-- AlterTable
+ALTER TABLE "ids" ALTER COLUMN "updatedAt" SET DATA TYPE TIMESTAMPTZ(3);
+
+-- AlterTable
+ALTER TABLE "indicators" ALTER COLUMN "updatedAt" SET DATA TYPE TIMESTAMPTZ(3);
+
+-- AlterTable
+ALTER TABLE "networks" ALTER COLUMN "updatedAt" SET DATA TYPE TIMESTAMPTZ(3);
+
+-- AlterTable
+ALTER TABLE "params" ALTER COLUMN "updatedAt" SET DATA TYPE TIMESTAMPTZ(3);
+
+-- AlterTable
+ALTER TABLE "records" ALTER COLUMN "created_at" SET DATA TYPE TIMESTAMPTZ(3),
+ALTER COLUMN "updated_at" SET DATA TYPE TIMESTAMPTZ(3);

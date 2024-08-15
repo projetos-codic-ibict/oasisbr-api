@@ -1,19 +1,11 @@
 import { Logger, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { EvolutionIndicatorsController } from './evolution-indicators.controller';
 import { EvolutionIndicatorsService } from './evolution-indicators.service';
-import {
-  EvolutionIndicator,
-  EvolutionIndicatorSchema,
-} from './schemas/evolution-indicator.schema';
+import { PrismaService } from 'src/prisma.service';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: EvolutionIndicator.name, schema: EvolutionIndicatorSchema },
-    ]),
-  ],
+  imports: [],
   controllers: [EvolutionIndicatorsController],
-  providers: [EvolutionIndicatorsService, Logger],
+  providers: [EvolutionIndicatorsService, PrismaService, Logger],
 })
 export class EvolutionIndicatorsModule {}

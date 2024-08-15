@@ -1,23 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Id, IdDocument } from './schemas/ids.schema';
+import { Id } from '@prisma/client';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class IdsService {
-  constructor(@InjectModel(Id.name) private idModel: Model<IdDocument>) {}
+  constructor(private prisma: PrismaService) {}
 
-  // create(createIdDto: CreateIdDto) {
-  //   return 'This action adds a new id';
-  // }
-
-  findAll() {
-    return this.idModel.find({}, 'source target').exec();
+  findAll(): Promise<Id[]> {
+    return this.prisma.id.findMany({});
   }
 
-  findOne(source: string) {
-    return this.idModel
-      .findOne({ source: source }, { _id: 0, source: 1, target: 1 })
-      .exec();
+  findOne(source: string): Promise<Id | null> {
+    return this.prisma.id.findFirst({
+      where: { source },
+    });
   }
 }

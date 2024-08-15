@@ -1,18 +1,12 @@
-import { Module, Logger } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
-import { MongooseModule } from '@nestjs/mongoose';
+import { Logger, Module } from '@nestjs/common';
+import { PrismaService } from 'src/prisma.service';
 import { IndicatorsController } from './indicators.controller';
 import { IndicatorsService } from './indicators.service';
-import { Indicator, IndicatorSchema } from './schemas/indicator.schema';
 
 @Module({
-  imports: [
-    HttpModule,
-    MongooseModule.forFeature([
-      { name: Indicator.name, schema: IndicatorSchema },
-    ]),
-  ],
+  imports: [HttpModule],
   controllers: [IndicatorsController],
-  providers: [IndicatorsService, Logger],
+  providers: [IndicatorsService, PrismaService, Logger],
 })
 export class IndicatorsModule {}
