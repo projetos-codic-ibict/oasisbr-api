@@ -55,8 +55,7 @@ export class OasisbrService {
             const networks = res.data;
             this.processNetworks(networks);
           },
-          error: (e) =>
-            this.logger.error('Get all OasisBr networks error:', e.message),
+          error: (e) => this.logger.error('Get all OasisBr networks error:', e.message),
           complete: () => this.logger.log('Get all OasisBr networks finished'),
         });
     } catch (error) {
@@ -76,9 +75,7 @@ export class OasisbrService {
       networkDto.validSize = network.validSize;
       if (network.attributes) {
         networkDto.sourceUrl = network.attributes.source_url;
-        networkDto.sourceType = getUsefulNameSourceType(
-          network.attributes.source_type,
-        );
+        networkDto.sourceType = getUsefulNameSourceType(network.attributes.source_type);
         networkDto.issn = network.attributes.issn;
         networkDto.email = network.attributes.contact_email;
         networkDto.uf = network.attributes.state;
@@ -91,9 +88,7 @@ export class OasisbrService {
   }
 
   private async updateEvolutionIndicators(networkDtos: NetworkDto[]) {
-    const eiParam = await this.paramsService.findByName(
-      ParamName.LOAD_EVOLUTION_INDICADORS,
-    );
+    const eiParam = await this.paramsService.findByName(ParamName.LOAD_EVOLUTION_INDICADORS);
     if (eiParam.value == 'false') {
       this.evolutionIndicatorsService.processIndicator(networkDtos);
       this.logger.log('changing evolution param');

@@ -6,9 +6,7 @@ import { Record, RecordDocument } from './schemas/records.schema';
 
 @Injectable()
 export class RecordsService {
-  constructor(
-    @InjectModel(Record.name) private recordModel: Model<RecordDocument>,
-  ) {}
+  constructor(@InjectModel(Record.name) private recordModel: Model<RecordDocument>) {}
 
   getSize(): Promise<number> {
     return this.recordModel.count({}).exec();

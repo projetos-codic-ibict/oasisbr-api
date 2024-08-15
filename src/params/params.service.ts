@@ -7,18 +7,14 @@ import { Param, ParamDocument } from './schemas/param.schema';
 
 @Injectable()
 export class ParamsService {
-  constructor(
-    @InjectModel(Param.name) private paramModel: Model<ParamDocument>,
-  ) {}
+  constructor(@InjectModel(Param.name) private paramModel: Model<ParamDocument>) {}
 
   findAll() {
     return this.paramModel.find({}, 'name value').exec();
   }
 
   findByName(name: ParamName) {
-    return this.paramModel
-      .findOne({ name: name }, { _id: 0, name: 1, value: 1 })
-      .exec();
+    return this.paramModel.findOne({ name: name }, { _id: 0, name: 1, value: 1 }).exec();
   }
 
   async update(name: ParamName, paramDto: ParamDto) {

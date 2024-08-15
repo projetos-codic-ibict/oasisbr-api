@@ -1,28 +1,25 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { NetworkDto } from '../networks/dto/network.dto';
+import { EvolutionIndicator, Network, Prisma } from '@prisma/client';
+import { PrismaService } from 'src/prisma.service';
 import { EvolutionIndicatorDto } from './dto/evolution-indicator.dto';
-import {
-  EvolutionIndicator,
-  EvolutionIndicatorDocument,
-} from './schemas/evolution-indicator.schema';
 
 @Injectable()
 export class EvolutionIndicatorsService {
   constructor(
-    @InjectModel(EvolutionIndicator.name)
-    private indicatorModel: Model<EvolutionIndicatorDocument>,
+    private prisma: PrismaService,
     private readonly logger: Logger,
   ) {}
 
-  async create(indicatorDto: EvolutionIndicatorDto) {
-    const indicator = new this.indicatorModel(indicatorDto);
-    await indicator.save();
+  async create(data: Prisma.EvolutionIndicatorCreateInput): Promise<EvolutionIndicator> {
+    return this.prisma.evolutionIndicator.create({
+      data,
+    });
   }
 
-  async createMany(indicatorDtos: Array<EvolutionIndicatorDto>) {
-    await this.indicatorModel.insertMany(indicatorDtos);
+  async createMany(data: Array<Prisma.EvolutionIndicatorCreateInput>) {
+    return await this.prisma.evolutionIndicator.createMany({
+      data,
+    });
   }
 
   async findByDates(init: Date, end: Date): Promise<EvolutionIndicator[]> {
@@ -39,70 +36,73 @@ export class EvolutionIndicatorsService {
     somente os indicadores do último dia de cada mês. 
     Isso porque o serviço que insere os indicadores 
     está rodando diariamente */
-    return this.indicatorModel
-      .aggregate([
-        {
-          $match: {
-            createdAt: {
-              $gte: init,
-              $lte: end,
-            },
-            sourceType: {
-              $in: [
-                'Revista Científica',
-                'Biblioteca Digital de Teses e Dissertações',
-                'Repositório de Dados de Pesquisa',
-                'Repositório de Publicações',
-                'Portal Agregador',
-                'Biblioteca Digital de Monografia',
-                'Servidor de Preprints',
-              ],
-            },
-          },
+    // Consulta adaptada para Prisma
+    const results = await this.prisma.evolutionIndicator.groupBy({
+      by: ['id', 'sourceType'],
+      where: {
+        createdAt: {
+          gte: init,
+          lte: end,
         },
-        { $addFields: { createdAt: { $toDate: '$createdAt' } } },
-        { $sort: { createdAt: -1 } },
-        {
-          $group: {
-            _id: {
-              id: '$id',
-              sourceType: '$sourceType',
-              month: { $month: '$createdAt' },
-              year: { $year: '$createdAt' },
-            },
-            content: {
-              $first: {
-                createdAt: '$createdAt',
-                numberOfNetworks: '$numberOfNetworks',
-                numberOfDocuments: '$numberOfDocuments',
-                sourceType: '$sourceType',
-              },
-            },
-          },
+        sourceType: {
+          in: [
+            'Revista Científica',
+            'Biblioteca Digital de Teses e Dissertações',
+            'Repositório de Dados de Pesquisa',
+            'Repositório de Publicações',
+            'Portal Agregador',
+            'Biblioteca Digital de Monografia',
+            'Servidor de Preprints',
+          ],
         },
-      ])
-      .collation({ locale: 'pt' })
-      .sort({ 'content.createdAt': 1 })
-      .exec();
+      },
+      _min: {
+        createdAt: true,
+      },
+      _max: {
+        createdAt: true,
+      },
+      _first: {
+        numberOfNetworks: true,
+        numberOfDocuments: true,
+        createdAt: true,
+        sourceType: true,
+      },
+      orderBy: {
+        createdAt: 'desc', // Ordem decrescente para pegar o último de cada mês
+      },
+    });
+
+    // Mapeando e transformando os resultados para incluir mês e ano
+    const groupedResults = results.map((item) => ({
+      id: item.id,
+      sourceType: item.sourceType,
+      month: item.createdAt.getMonth() + 1, // Para obter o mês
+      year: item.createdAt.getFullYear(), // Para obter o ano
+      content: {
+        createdAt: item.createdAt,
+        numberOfNetworks: item.numberOfNetworks,
+        numberOfDocuments: item.numberOfDocuments,
+        sourceType: item.sourceType,
+      },
+    }));
+
+    return groupedResults;
   }
 
-  async processIndicator(networkDtos: NetworkDto[]) {
+  async processIndicator(networks: Network[]) {
     this.logger.log('init process evolutions indicators');
     const indicatorsMap: Map<string, EvolutionIndicatorDto> = new Map();
 
-    networkDtos.map((network) => {
+    networks.map((network) => {
       if (!network.sourceType) {
         network.sourceType = 'Indefinido';
       }
       if (indicatorsMap.get(network.sourceType)) {
         indicatorsMap.get(network.sourceType).numberOfNetworks += 1;
-        indicatorsMap.get(network.sourceType).numberOfDocuments +=
-          network.validSize;
+        indicatorsMap.get(network.sourceType).numberOfDocuments += network.validSize;
       } else {
-        indicatorsMap.set(
-          network.sourceType,
-          new EvolutionIndicatorDto(network.sourceType, 1, network.validSize),
-        );
+        indicatorsMap.set(network.sourceType, new EvolutionIndicatorDto(network.sourceType, 1, network.validSize));
       }
     });
     const indicators = Array.from(indicatorsMap.values());
