@@ -30,11 +30,15 @@ export class OasisbrService {
   }
 
   private updateEvolutionIndicatorParam(value: string) {
-    const eiDto: Prisma.ParamCreateInput = { name: ParamName.LOAD_EVOLUTION_INDICADORS, value: value };
+    const eiDto: Prisma.ParamCreateInput = {
+      name: ParamName.LOAD_EVOLUTION_INDICADORS,
+      value: value,
+      updatedAt: new Date(),
+    };
     this.paramsService.update(ParamName.LOAD_EVOLUTION_INDICADORS, eiDto);
   }
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_DAY_AT_1AM)
   loadOasisbrNetworks() {
     this.logger.log('Get all OasisBr networks');
     const URL = this.configService.get<string>('HARVESTER_API_URL');
