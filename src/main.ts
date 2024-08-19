@@ -14,7 +14,6 @@ async function bootstrap() {
   app.enableCors({
     origin: origins,
   });
-  app.use(helmet());
   const config = new DocumentBuilder()
     .setTitle('OasisBr API')
     .setDescription('The OasisBr API documentation')
@@ -22,6 +21,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/', app, document);
+  app.use(helmet());
   await app.listen(process.env.SERVER_PORT);
 }
 bootstrap();
