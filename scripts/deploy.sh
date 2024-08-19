@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 set -e
+export NVM_DIR=~/.nvm
+source ~/.nvm/nvm.sh  
 echo "Versão do Node"
 node -v
 echo "Running yarn install"
