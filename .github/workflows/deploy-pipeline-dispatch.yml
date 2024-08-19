@@ -10,16 +10,16 @@ env:
   DATABASE_URL: ${{secrets.DATABASE_URL}}
 
 jobs:
-  test:
-    runs-on: [self-hosted, Linux, x64, runner-persea]
-    environment:
-      name: test
-      url: 'http://172.16.16.112:3000/'
+  # test:
+  #   runs-on: [self-hosted, Linux, x64, runner-persea]
+  #   environment:
+  #     name: test
+  #     url: 'http://172.16.16.112:3000/'
 
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          sh scripts/deploy.sh
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - run: |
+  #         sh scripts/deploy.sh
   prod-api:
     runs-on: [self-hosted, Linux, x64, oa-api]
     environment:
