@@ -15,7 +15,7 @@ echo "prisma generate"
 yarn prisma-generate
 
 echo "prisma deploy"
-yarn prisma-deploy
+yarn prisma-migrate
 
 echo "yarn deploy"
 yarn deploy
