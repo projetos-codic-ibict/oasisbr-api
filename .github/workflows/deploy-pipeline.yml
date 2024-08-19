@@ -1,4 +1,4 @@
-name: Deploy Oaisbr-API Test
+name: Deploy Oaisbr-API
 
 on:
   push:
@@ -10,6 +10,7 @@ env:
   DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
   HARVESTER_API_USERNAME: ${{secrets.HARVESTER_API_USERNAME}}
   HARVESTER_API_PASS: ${{secrets.HARVESTER_API_PASS}}
+  DATABASE_URL: ${{secrets.DATABASE_URL}}
 
 jobs:
   test:
@@ -27,6 +28,16 @@ jobs:
     environment:
       name: prod
       url: 'https://api-oasisbr.ibict.br/'
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          sh scripts/deploy.sh
+  prod-api:
+    runs-on: [self-hosted, Linux, x64, oa-api]
+    environment:
+      name: prod-api
+      url: 'http://172.16.17.19:3000'
 
     steps:
       - uses: actions/checkout@v3
