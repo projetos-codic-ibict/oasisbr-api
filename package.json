@@ -7,8 +7,8 @@
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
-    "prisma-generate": "npx prisma generate",
-    "prisma-migrate": "npx prisma migrate deploy",
+    "prisma-generate": "yarn prisma generate",
+    "prisma-migrate": "yarn prisma migrate deploy",
     "start": "nest start",
     "dev": "nest start --watch",
     "build": "nest build",
