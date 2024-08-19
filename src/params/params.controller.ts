@@ -1,7 +1,21 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiProperty, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { Param } from '@prisma/client';
 import { ParamName } from './enums/param.enum';
 import { ParamsService } from './params.service';
+
+class ParamType implements Param {
+  @ApiProperty()
+  id: number;
+  @ApiProperty()
+  name: string;
+  @ApiProperty()
+  value: string;
+  @ApiProperty()
+  createdAt: Date;
+  @ApiProperty()
+  updatedAt: Date;
+}
 
 @Controller('params')
 export class ParamsController {
@@ -9,7 +23,7 @@ export class ParamsController {
 
   @Get()
   @ApiQuery({ name: 'name', enum: ParamName, required: false })
-  @ApiResponse({ status: 200, type: '' })
+  @ApiResponse({ status: 200, type: ParamType })
   find(@Query('name') name: ParamName) {
     if (name != null) {
       return this.paramsService.findByName(name);
