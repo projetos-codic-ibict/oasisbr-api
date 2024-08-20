@@ -23,7 +23,9 @@ export class OasisbrService {
     private readonly logger: Logger,
   ) {}
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  /** Vai resetar uma vez por dia para que o indicador de
+   * evolução seja processado somente uma vez por dia **/
+  @Cron(CronExpression.EVERY_DAY_AT_5PM)
   resetParams() {
     this.logger.log('reseting params');
     this.updateEvolutionIndicatorParam('false');
@@ -38,7 +40,7 @@ export class OasisbrService {
     this.paramsService.update(ParamName.LOAD_EVOLUTION_INDICADORS, eiDto);
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_HOUR)
   loadOasisbrNetworks() {
     this.logger.log('Get all OasisBr networks');
     const URL = this.configService.get<string>('HARVESTER_API_URL');

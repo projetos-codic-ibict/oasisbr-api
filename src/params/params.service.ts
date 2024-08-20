@@ -21,7 +21,6 @@ export class ParamsService {
 
   async update(name: ParamName, param: Prisma.ParamCreateInput) {
     try {
-      console.log(`>>> ${name} && ${param}`);
       if (name && param) {
         await this.prisma.param.upsert({
           where: {

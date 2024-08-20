@@ -33,9 +33,6 @@ export class EvolutionIndicatorsService {
       end = new Date(end);
     }
 
-    console.log('init', init.toLocaleString('pt-BR'));
-    console.log('end', end.toLocaleString('pt-BR'));
-
     /* foi adicionado o aggregate para filtrar 
     somente os indicadores do último dia de cada mês. 
     Isso porque o serviço que insere os indicadores 
