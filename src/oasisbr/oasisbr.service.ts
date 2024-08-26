@@ -25,7 +25,7 @@ export class OasisbrService {
 
   /** Vai resetar uma vez por dia para que o indicador de
    * evolução seja processado somente uma vez por dia **/
-  @Cron(CronExpression.EVERY_DAY_AT_5PM)
+  @Cron(CronExpression.EVERY_DAY_AT_7AM)
   resetParams() {
     this.logger.log('reseting params');
     this.updateEvolutionIndicatorParam('false');
