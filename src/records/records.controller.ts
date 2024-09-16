@@ -15,7 +15,7 @@ class RecordType implements Record {
   @ApiProperty()
   record: string;
   @ApiProperty()
-  source_ids: string;
+  source_ids: string[];
   @ApiProperty()
   updated_at: Date;
 }
