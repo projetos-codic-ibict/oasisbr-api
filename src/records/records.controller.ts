@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiProperty, ApiResponse } from '@nestjs/swagger';
 import { Record } from '@prisma/client';
 import { RecordsService } from './records.service';
@@ -26,7 +26,8 @@ export class RecordsController {
 
   @Get('/size')
   @ApiResponse({ status: 200, type: Number })
-  async getSize(@Param('missed') missed: boolean = false) {
+  async getSize(@Query('missed') missed: boolean) {
+    console.log('missed', missed);
     const size = await this.recordsService.getSize(missed);
     return `Total de Records encontrados: ${size}`;
   }
