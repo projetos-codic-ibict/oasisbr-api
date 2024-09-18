@@ -26,6 +26,13 @@ export class IdsController {
   //   return this.idsService.findAll();
   // }
 
+  @Get('/size')
+  @ApiResponse({ status: 200, type: Number })
+  async getSize() {
+    const size = await this.idsService.getSize();
+    return `Total de Records encontrados: ${size}`;
+  }
+
   @Get(':id')
   @ApiQuery({ name: 'source', required: true })
   @ApiResponse({ status: 200, type: IdType })

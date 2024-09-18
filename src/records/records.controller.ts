@@ -26,8 +26,8 @@ export class RecordsController {
 
   @Get('/size')
   @ApiResponse({ status: 200, type: Number })
-  async getSize() {
-    const size = await this.recordsService.getSize();
+  async getSize(@Param('missed') missed: boolean = false) {
+    const size = await this.recordsService.getSize(missed);
     return `Total de Records encontrados: ${size}`;
   }
 
@@ -35,5 +35,11 @@ export class RecordsController {
   @ApiResponse({ status: 200, type: RecordType })
   findOne(@Param('id') id: string) {
     return this.recordsService.findOne(id);
+  }
+
+  @Get('/missed')
+  @ApiResponse({ status: 200, type: Number })
+  async getMissed() {
+    return this.recordsService.findMissed();
   }
 }

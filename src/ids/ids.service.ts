@@ -10,6 +10,10 @@ export class IdsService {
     return this.prisma.id.findMany({});
   }
 
+  getSize(): Promise<number> {
+    return this.prisma.id.count({});
+  }
+
   findOne(source: string): Promise<Id | null> {
     return this.prisma.id.findFirst({
       where: { source },

@@ -6,13 +6,24 @@ import { PrismaService } from 'src/prisma.service';
 export class RecordsService {
   constructor(private prisma: PrismaService) {}
 
-  getSize(): Promise<number> {
+  getSize(missed: boolean): Promise<number> {
+    if (missed) {
+      return this.prisma.record.count({
+        where: { missed: true },
+      });
+    }
     return this.prisma.record.count({});
   }
 
   findOne(hotId: string): Promise<Record> {
     return this.prisma.record.findFirst({
       where: { hot_id: hotId },
+    });
+  }
+
+  findMissed(): Promise<Record[]> {
+    return this.prisma.record.findMany({
+      where: { missed: true },
     });
   }
 }
