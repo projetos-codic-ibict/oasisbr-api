@@ -9,7 +9,7 @@ export class RecordsService {
   getSize(missed: boolean): Promise<number> {
     if (missed) {
       return this.prisma.record.count({
-        where: { missed: true },
+        where: { missed },
       });
     }
     return this.prisma.record.count({});

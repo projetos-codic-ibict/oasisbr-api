@@ -27,8 +27,7 @@ export class RecordsController {
   @Get('/size')
   @ApiResponse({ status: 200, type: Number })
   async getSize(@Query('missed') missed: boolean) {
-    console.log('missed', missed);
-    const size = await this.recordsService.getSize(missed);
+    const size = await this.recordsService.getSize(missed ? /true/.test(missed.toString()) : null);
     return `Total de Records encontrados: ${size}`;
   }
 
