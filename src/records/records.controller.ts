@@ -38,8 +38,8 @@ export class RecordsController {
   }
 
   @Get('/missed')
-  @ApiResponse({ status: 200, type: Number })
-  async getMissed() {
+  @ApiResponse({ status: 200, type: RecordType, isArray: true })
+  async getMissed(): Promise<Record[]> {
     return this.recordsService.findMissed();
   }
 }

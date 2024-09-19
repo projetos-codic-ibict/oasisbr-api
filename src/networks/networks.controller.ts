@@ -35,7 +35,7 @@ export class NetworksController {
 
   @Get()
   @ApiResponse({ status: 200, type: NetworkType, isArray: true })
-  async findAll(@Query('sourceType') sourceType, @Query('name') name): Promise<Network[]> {
+  async findAll(@Query('sourceType') sourceType): Promise<Network[]> {
     console.log('sourceType', sourceType);
     if (sourceType) {
       return this.networksService.findByNetworkBySourceType(sourceType);
