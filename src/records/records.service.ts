@@ -22,6 +22,7 @@ export class RecordsService {
   }
 
   findMissed(): Promise<Record[]> {
+    console.log('findMissed');
     return this.prisma.record.findMany({
       where: { missed: true },
     });

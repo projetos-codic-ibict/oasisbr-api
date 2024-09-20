@@ -27,19 +27,24 @@ export class RecordsController {
   @Get('/size')
   @ApiResponse({ status: 200, type: Number })
   async getSize(@Query('missed') missed: boolean) {
+    console.log('size');
     const size = await this.recordsService.getSize(missed ? /true/.test(missed.toString()) : null);
     return `Total de Records encontrados: ${size}`;
+  }
+
+  @Get('/missed')
+  @ApiResponse({ status: 200, type: RecordType, isArray: true })
+  async getMissed() {
+    console.log('getMissed');
+    const records = await this.recordsService.findMissed();
+    console.log('records', records);
+    return records;
   }
 
   @Get(':id')
   @ApiResponse({ status: 200, type: RecordType })
   findOne(@Param('id') id: string) {
+    console.log('getMissed');
     return this.recordsService.findOne(id);
-  }
-
-  @Get('/missed')
-  @ApiResponse({ status: 200, type: RecordType, isArray: true })
-  async getMissed(): Promise<Record[]> {
-    return this.recordsService.findMissed();
   }
 }
