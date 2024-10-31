@@ -5,10 +5,11 @@ import { IdsService } from './ids.service';
 export class IdsController {
   constructor(private readonly idsService: IdsService) {}
 
-  // @Post()
-  // create(@Body() createIdDto: CreateIdDto) {
-  //   return this.idsService.create(createIdDto);
-  // }
+  @Get('/size')
+  async getSize() {
+    const size = await this.idsService.getSize();
+    return `Total de Ids encontrados: ${size}`;
+  }
 
   @Get()
   findAll() {

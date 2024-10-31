@@ -5,7 +5,7 @@ import { RecordsService } from './records.service';
 export class RecordsController {
   constructor(private readonly recordsService: RecordsService) {}
 
-  @Get()
+  @Get('/size')
   async getSize() {
     const size = await this.recordsService.getSize();
     return `Total de Records encontrados: ${size}`;
