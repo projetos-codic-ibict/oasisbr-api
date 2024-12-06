@@ -1,6 +1,7 @@
-name: Deploy Oaisbr-API Test
+name: Deploy teste e maquina antiga
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
