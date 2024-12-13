@@ -1,4 +1,4 @@
-name: Deploy Oaisbr-API
+name: Deploy teste e maquina antiga
 
 on:
   workflow_dispatch:
