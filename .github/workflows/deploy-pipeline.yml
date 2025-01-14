@@ -1,10 +1,10 @@
-name: Deploy teste e maquina antiga
+name: test and old prod
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
 
 env:
   DATABASE_USER: ${{secrets.DATABASE_USER}}
@@ -29,16 +29,6 @@ jobs:
     environment:
       name: prod
       url: 'https://api-oasisbr.ibict.br/'
-
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          sh scripts/deploy.sh
-  prod-api:
-    runs-on: [self-hosted, Linux, x64, oa-api]
-    environment:
-      name: prod-api
-      url: 'http://172.16.17.19:3000'
 
     steps:
       - uses: actions/checkout@v3
