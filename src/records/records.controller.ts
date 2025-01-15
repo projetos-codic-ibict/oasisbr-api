@@ -37,14 +37,13 @@ export class RecordsController {
   async getMissed() {
     console.log('getMissed');
     const records = await this.recordsService.findMissed();
-    console.log('records', records);
     return records;
   }
 
   @Get(':id')
   @ApiResponse({ status: 200, type: RecordType })
   findOne(@Param('id') id: string) {
-    console.log('getMissed');
+    console.log('findOne');
     return this.recordsService.findOne(id);
   }
 }
