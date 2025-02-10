@@ -42,8 +42,10 @@ export class RecordsController {
 
   @Get(':id')
   @ApiResponse({ status: 200, type: RecordType })
-  findOne(@Param('id') id: string) {
-    console.log('findOne');
-    return this.recordsService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    console.log('Get record, from id:', id);
+    const record = await this.recordsService.findOne(id);
+    console.log('Record:', record);
+    return record;
   }
 }
