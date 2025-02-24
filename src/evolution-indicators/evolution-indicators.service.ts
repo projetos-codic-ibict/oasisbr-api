@@ -22,6 +22,16 @@ export class EvolutionIndicatorsService {
     });
   }
 
+  private convertToDate(dateBr) {
+    // Divide a string em dia, mês e ano
+    const [dia, mes, ano] = dateBr.split('/');
+
+    // Cria um objeto Date (obs: o mês no JavaScript é base 0, então subtraímos 1)
+    const dateJS = new Date(ano, mes - 1, dia);
+
+    return dateJS;
+  }
+
   async findByDates(init: Date, end: Date) {
     if (!init && !end) {
       const todayMinusOneYear = new Date();
@@ -29,9 +39,11 @@ export class EvolutionIndicatorsService {
       init = todayMinusOneYear;
       end = new Date();
     } else {
-      init = new Date(init);
-      end = new Date(end);
+      init = this.convertToDate(init);
+      end = this.convertToDate(end);
     }
+
+    console.info(`service::buscando indicadores de evolução de ${init} até ${end}`);
 
     /* foi adicionado o aggregate para filtrar 
     somente os indicadores do último dia de cada mês. 
