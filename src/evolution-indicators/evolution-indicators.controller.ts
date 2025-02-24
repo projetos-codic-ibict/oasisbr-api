@@ -25,6 +25,7 @@ export class EvolutionIndicatorsController {
   @ApiQuery({ name: 'end', required: false })
   @ApiResponse({ status: 200, type: EvolutionIndicatorsType, isArray: true })
   find(@Query('init') init: Date, @Query('end') end: Date) {
+    console.info(`buscando indicadores de evolução de ${init} até ${end}`);
     return this.indicatorsService.findByDates(init, end);
   }
 }
